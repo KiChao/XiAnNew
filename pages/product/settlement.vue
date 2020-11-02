@@ -1,0 +1,240 @@
+<template>
+	<view>
+		<view style="background-color: #19BE6B;width: 100%;height: 100rpx;"></view>
+		<navigator url="/pages/address/address?type=choose" class="card default-window flex" style="margin-top: -80rpx;">
+			<view class="">
+				<u-icon name="map" size="50"></u-icon>
+			</view>
+			<view v-if="addressInfo.addressId==0" style="padding-left: 30rpx;line-height: 1.8;">
+				选择收货地址
+			</view>
+			<view v-else style="padding-left: 30rpx;line-height: 1.8;">
+				<view class="flex place bold">
+					<view>{{addressInfo.name}}</view>
+					<view>{{addressInfo.phone}}</view>
+				</view>
+				<view class="u-font-26 u-tips-color">
+					{{addressInfo.address}}
+				</view>
+			</view>
+		</navigator>
+		<view v-for="(item,index) in providerList" :key="index" class="card">
+			<view class="default-window u-border-bottom">
+				<u-section :title="item.fisher_name" :right="false" line-color="#19be6b"></u-section>
+			</view>
+			<view v-for="(product,tip) in item.product" :key="tip" class="u-border-bottom">
+				<view class="default-window flex" style="align-items: flex-start;">
+					<view class="product-image">
+						<image :src="product.img_info.url" class="image" mode="widthFix"></image>
+					</view>
+					<view class="product-name">
+						<view>{{product.name}}</view>
+						<view class="u-font-12 u-tips-color">
+							<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}/</text>
+						</view>
+						<view class="flex place">
+							<view class="font-red bold">{{product.product_type==1?`￥${product.discount_price}`:`${product.discount_price}鱼仔`}}</view>
+							<view class="u-font-11">×{{product.num}}</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="default-window flex place">
+				<view>共{{item.product_count}}件商品</view>
+				<view class="flex">
+					<view>合计</view>
+					<view class="u-font-40 font-red bold" style="margin: 0 10rpx;">{{item.total_price}}</view>
+					<view>{{type==1?'元':'鱼仔'}}</view>
+				</view>
+			</view>
+		</view>
+		<view class="card">
+			<view class="default-window u-border-bottom">
+				<u-section title="订单信息" :right="false" line-color="#19be6b"></u-section>
+			</view>
+			<view class="default-window flex place">
+				<view>订单备注</view>
+				<view style="flex: 1;">
+					<u-input v-model="desc" input-align='right' placeholder="请输入备注信息"></u-input>
+				</view>
+			</view>
+			<view class="default-window flex place">
+				<view>订单运费</view>
+				<view>{{totalFee==0?'免运费':totalFee+'元'}}</view>
+			</view>
+
+			<view class="default-window flex place">
+				<view>支付方式</view>
+				<view class="font-green bold">{{type==1?'在线支付':'鱼仔兑换'}}</view>
+			</view>
+			<view class="default-window flex place">
+				<view>订单金额</view>
+				<view class="font-red">
+					<text v-if="productInfo.product_type==1">￥{{totalPrice}}</text>
+					<text v-else>{{totalPrice}}鱼仔</text>
+				</view>
+			</view>
+		</view>
+		<view class="btn-bottom">
+			<view class="default-window flex place white">
+				<view>
+					<text class="font-red" v-if="productInfo.product_type==1">￥</text><text class="font-red u-font-40 bold">{{totalPrice}}</text><text
+					 class="font-red" v-if="productInfo.product_type==2">鱼仔</text><text v-if="totalFee!=0">+邮费¥{{totalFee}}</text>
+				</view>
+				<view>
+					<u-button @click="orderSubmit" type="success">结算订单</u-button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				productInfo: this.$store.state.product.product,
+				num: this.$store.state.product.num,
+				skuInfo: this.$store.state.product.sku,
+				detailId: this.$store.state.product.skuId || 0,
+
+				providerList: [],
+				totalPrice: 0,
+				totalNeedPoint: 0,
+				totalFee: 0,
+
+				desc: '', //备注
+				addressInfo: {
+					addressId: 0
+				},
+				type: 0,
+			};
+		},
+		onShow() {
+			this.addressInfo = this.$store.state.address.address;
+			let that = this;
+			let params = {
+				address_id: that.addressInfo.addressId,
+				product_list: JSON.stringify([`${that.productInfo.product_id}_${that.detailId}_${that.num}`])
+			};
+			this.$api('Order/get_freight', params).then(data => {
+				if (data.status == 1) {
+					this.totalFee = data.data.freight;
+				} else {
+					this.$showToast(data.msg);
+				}
+
+			});
+		},
+		onReady() {
+			this.createSettlement();
+		},
+		methods: {
+			//提交订单
+			orderSubmit() {
+
+				let that = this;
+				this.$showModal('是否提交订单？', () => {
+					uni.showLoading({
+						title: '跳转支付'
+					});
+					if (that.addressInfo.addressId == '') {
+						that.$showToast('请选择收货地址');
+						uni.hideLoading();
+						return;
+					}
+					let product = [];
+					for (let m in that.providerList) {
+						let ptemp = that.providerList[m].product
+						for (let n in ptemp) {
+							let temp = `${ptemp[n].product_id}_${ptemp[n].product_detail_id}_${ptemp[n].num}`;
+							product.push(temp);
+						}
+					}
+					let params = {
+						address_id: that.addressInfo.addressId,
+						product_list: JSON.stringify(product),
+					};
+					that.$api('Order/create', params).then(data => {
+						if (data.status == 1) {
+
+							let no = data.data.pay_no;
+							let params = {
+								is_mini: 1,
+								no: no
+							};
+							this.$api('Pay/pay', params).then(data => {
+								if (data.status == 1) {
+									uni.hideLoading();
+									this.$pay(data.data.response).then(data => {
+										uni.reLaunch({
+											url: '/pages/public/success/success'
+										})
+									}).catch(res => {
+										uni.switchTab({
+											url: '/pages/usercenter/usercenter'
+										})
+										// this.$showToast(res.errMsg)
+									})
+								} else if (data.status == 2) {
+									uni.hideLoading();
+									that.$showToast('支付成功');
+									uni.switchTab({
+										url: '/pages/usercenter/usercenter'
+									})
+								} else {
+									that.$showToast(data.msg);
+								}
+
+							})
+
+
+						} else {
+							uni.hideLoading();
+							that.$showToast(data.msg);
+						}
+					});
+				})
+			},
+			//初始化订单信息
+			createSettlement() {
+				let params = {
+					product_id: this.productInfo.product_id,
+					sku_array: this.skuInfo.skuArray || 0,
+					num: this.num,
+					product_list: JSON.stringify([`${this.productInfo.product_id}_${this.detailId}_${this.num}`])
+				};
+				this.$api('Order/settlement', params).then(data => {
+					if (data.status == 1) {
+						this.providerList = data.data.product_list;
+						this.totalPrice = data.data.all_price;
+						this.totalNeedPoint = data.data.total_need_point;
+						this.type = data.data.type;
+
+					} else {
+						this.$showToast(data.msg);
+					}
+				});
+
+			},
+		}
+	}
+</script>
+
+<style lang="scss">
+	.btn-bottom {
+		width: 100%;
+		bottom: 0;
+		position: fixed;
+	}
+
+	.product-image {
+		width: 130rpx;
+		height: 130rpx;
+	}
+
+	.product-name {
+		padding-left: 30rpx;
+		flex: 1;
+	}
+</style>

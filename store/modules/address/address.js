@@ -1,6 +1,6 @@
 const state = {
 	address: {
-		addressId: null,
+		addressId: 0,
 		name: null,
 		phone: null,
 		address: null

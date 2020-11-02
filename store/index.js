@@ -5,12 +5,14 @@ Vue.use(Vuex)
 import login from './modules/login/login'
 import address from './modules/address/address'
 import goods from './modules/goods/goods'
+import product from './modules/product/product'
 
 const store = new Vuex.Store({
 	modules: {
 		login,
 		address,
-		goods
+		goods,
+		product
 	}
 })
 export default store

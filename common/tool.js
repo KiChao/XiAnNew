@@ -20,12 +20,31 @@ export const port = async function(location, params = null) {
 					
 					resolve(res.data)
 				}
-
 			},
 			fail: reject
 		})
 	})
 }
+export const port2 = async function(location, params = null) {
+	return await new Promise((resolve, reject) => {
+		let that = this;
+		uni.request({
+			url: `https://m.vxyz.cn/api/${location}`,
+			data: params,
+			method: `POST`,
+			header: {
+				'token': uni.getStorageSync('token'),
+				'content-type': 'application/x-www-form-urlencoded',
+				'city': that.$store.state.login.cityId
+			},
+			success: (res) => {
+				resolve(res.data)
+			},
+			fail: reject
+		})
+	})
+}
+
 
 /* 封装toast显示 */
 export const showToast = function(title, icon = 'none', duration = 1500) {
