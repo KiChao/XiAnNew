@@ -6,13 +6,15 @@
 				 placeholder="输入搜索内容" v-model="searchValue" @search="search"></u-search>
 			</view>
 		</u-sticky>
-		<swiper autoplay>
-			<swiper-item @tap="linkJump(item.href_type,item.href_value)" v-for="(item,index) in carouselList" :key="index">
+		<swiper style="height: 56vw;" autoplay>
+			<swiper-item @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in carouselList"
+			 :key="index">
 				<image :src="item.img_url" class="image" mode="widthFix"></image>
 			</swiper-item>
 		</swiper>
 		<view class="modal-window">
-			<view @tap="linkJump(item.href_type,item.href_value)" v-for="(item,index) in modalList" :key="index" :style="{width: `${item.width}%`}">
+			<view @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in modalList" :key="index"
+			 :style="{width: `${item.width}%`}">
 
 				<u-image :fade="false" :src="item.img_url" width="100%" mode="widthFix"></u-image>
 			</view>
@@ -30,12 +32,6 @@
 				productList: [],
 				page: 1,
 				searchValue: ''
-			}
-		},
-		onShareAppMessage() {
-			return {
-				title: '锡安新品',
-				path: `/pages/index/index`,
 			}
 		},
 		onLoad() {
@@ -59,16 +55,30 @@
 				switch (type) {
 					case 'product':
 						href = '/pages/product/detail?loadId=';
+						uni.navigateTo({
+							url: href + loadId
+						})
 						break;
 					case 'cate':
 						href = '/pages/product/product?loadId=';
+						uni.navigateTo({
+							url: href + loadId
+						})
+						break;
+					case 'miniProgram':
+						wx.navigateToMiniProgram({
+							appId: value,
+							path: path,
+						})
+						break;
+					case 'other':
+						uni.navigateTo({
+							url: value
+						})
 						break;
 					default:
 						break;
 				}
-				uni.navigateTo({
-					url: href + loadId
-				})
 			},
 			//加载轮播图
 			loadCarousel() {

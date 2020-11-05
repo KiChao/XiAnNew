@@ -176,6 +176,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/usercenter/aboutUs/aboutUs",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "关于我们",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 		"color": "#333333",

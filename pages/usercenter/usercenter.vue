@@ -109,7 +109,7 @@
 					<u-icon name="arrow-right"></u-icon>
 				</view>
 			</navigator>
-			<view class="default-window flex place">
+			<view @click="openMini" class="default-window flex place">
 				<view class="flex">
 					<u-icon name="star"></u-icon>
 					<view style="padding: 0 30rpx;">锡安新品渔夫号</view>
@@ -118,6 +118,15 @@
 					<u-icon name="arrow-right"></u-icon>
 				</view>
 			</view>
+			<navigator hover-class="none" url="/pages/usercenter/aboutUs/aboutUs" class="default-window u-border-bottom flex place">
+				<view class="flex">
+					<u-icon name="error-circle"></u-icon>
+					<view style="padding: 0 30rpx;">关于我们</view>
+				</view>
+				<view>
+					<u-icon name="arrow-right"></u-icon>
+				</view>
+			</navigator>
 		</view>
 	</view>
 </template>
@@ -136,6 +145,12 @@
 			this.loadUserDetail();
 		},
 		methods: {
+			openMini(){
+				wx.navigateToMiniProgram({
+					appId: 'wx55b0503ceeb1e360',
+					path: '/pages/fisher/detail?loadId=116',
+				})
+			},
 			//签到
 			sign() {
 				this.$showModal('是否进行签到？', () => {
