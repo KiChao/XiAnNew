@@ -16,7 +16,7 @@
 			<view @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in modalList" :key="index"
 			 :style="{width: `${item.width}%`}">
 
-				<u-image :fade="false" :src="item.img_url" width="100%" mode="widthFix"></u-image>
+				<image :fade="false" :src="item.img_url" class="image" mode="widthFix"></image>
 			</view>
 		</view>
 		<product-list :productList="productList"></product-list>
