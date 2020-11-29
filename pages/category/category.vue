@@ -1,10 +1,7 @@
 <template>
 	<view>
 
-		<view class="white default-window search-window">
-			<u-search :show-action="false" border-color="#19be6b" color="#333333" search-icon-color="#19be6b" bg-color="#FFFFFF"
-			 placeholder="输入搜索内容" v-model="searchValue" @search="search"></u-search>
-		</view>
+		<search-bar></search-bar>
 
 
 		<view class="cate-window flex">

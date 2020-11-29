@@ -103,3 +103,15 @@ export const pay = async function(response) {
 		});
 	})
 }
+/* 获取小程序二维码上的参数 */
+
+export const getRequestParameters = function(params = "") {
+	let theRequest = new Object();
+	if (params != undefined) {
+		let strs = params.split("&");
+		for (let i = 0; i < strs.length; i++) {
+			theRequest[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
+		}
+	}
+	return theRequest;
+}

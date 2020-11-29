@@ -1,11 +1,6 @@
 <template>
 	<view>
-		<u-sticky>
-			<view class="white default-window search-window">
-				<u-search :show-action="false" border-color="#19be6b" color="#333333" search-icon-color="#19be6b" bg-color="#FFFFFF"
-				 placeholder="输入搜索内容" v-model="searchValue" @search="search"></u-search>
-			</view>
-		</u-sticky>
+		<search-bar></search-bar>
 		<swiper style="height: 56vw;" autoplay>
 			<swiper-item @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in carouselList"
 			 :key="index">
@@ -34,8 +29,20 @@
 				searchValue: ''
 			}
 		},
-		onLoad() {
-
+		onLoad(data) {
+			if (data.scene) {
+				let query = this.$getRequestParameters(decodeURIComponent(data.scene))
+				let sn = query.sn;
+				console.log(sn)
+				if (sn) {
+					this.$store.commit('setSn', {
+						ref_sn: sn
+					})
+				} else {
+					console.log('无sn')
+				}
+			
+			}
 		},
 		onReady() {
 			this.loadCarousel();
@@ -110,7 +117,8 @@
 			//加载商品列表
 			loadProduct() {
 				let params = {
-					page: this.page
+					page: this.page,
+					product_type: 1
 				}
 				this.$api('Product/lists', params).then(data => {
 					if (data.status == 1) {

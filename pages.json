@@ -185,10 +185,28 @@
             }
             
         }
+        ,{
+            "path" : "pages/cart/cart",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "购物车",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/cart/settlement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "结算",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 		"color": "#333333",
-		"selectedColor": "#19be6b",
+		"selectedColor": "#55aa29",
 		"borderStyle": "white",
 		"backgroundColor": "#ffffff",
 		"list": [{

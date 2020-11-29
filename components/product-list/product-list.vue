@@ -6,7 +6,7 @@
 				<view>{{item.name}}</view>
 				<u-gap height="10"></u-gap>
 				<view class="flex flexwarp">
-					<view v-for="(label,tip) in item.labelList" :key="tip" class="tag-item">
+					<view v-for="(label,tip) in item.tag" :key="tip" class="tag-item">
 						<u-tag :text="label" mode="dark" shape="circle" type="success" size="mini"></u-tag>
 					</view>
 				</view>

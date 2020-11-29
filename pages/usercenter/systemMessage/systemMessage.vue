@@ -19,8 +19,12 @@
 	export default {
 		data() {
 			return {
-				system: []
+				system: [],
+				page: 0
 			};
+		},
+		onReachBottom() {
+			this.loadSystemMessage();
 		},
 		onReady() {
 			this.loadSystemMessage();
@@ -28,9 +32,17 @@
 		methods: {
 			//加载消息中心
 			loadSystemMessage() {
-				this.$api('Sysmsg/index').then(data => {
+				this.page = this.page + 1;
+				let params = {
+					page: this.page
+				}
+				this.$api('Sysmsg/index', params).then(data => {
 					if (data.status == 1) {
-						this.system = data.data.sysmsg_list;
+						let list = data.data.sysmsg_list;
+						for (let m in list) {
+							this.system.push(list[m]);
+						}
+						// this.system = data.data.sysmsg_list;
 					} else {
 						this.$showToast(data.msg);
 					}

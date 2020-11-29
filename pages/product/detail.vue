@@ -10,25 +10,34 @@
 			<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex">
-				<view class="price">{{productInfo.product_type==1?'¥':'鱼仔'}}{{productInfo.discount_price||''}}</view>
+				<view class="price"><text class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}</view>
 				<view class="origal-price">￥{{productInfo.original_price||''}}</view>
 			</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex" v-if="productInfo.product_type==2 && productInfo.limit_lv>0">
 				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">以上的用户可兑换</text>
 			</view>
+			<view class="flex" v-if="productInfo.product_type==1">
+				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">专享价</text>
+			</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex place u-font-12 u-tips-color">
-				<view>销量：{{productInfo.sv_total_num||''}}</view>
+				<view>销量：{{productInfo.sv_total_num||0}}</view>
 				<view>库存：{{productInfo.stock||''}}</view>
 				<view>重量：{{productInfo.weight||''}}kg</view>
 			</view>
 		</view>
 		<u-gap height="16"></u-gap>
-		<view class="default-window white"><text>该商品由</text><text class="font-green">{{productInfo.fisher_info.nickname}}</text><text>赞助，</text><text
+		<view @click="openMini" class="default-window white"><text>该商品由</text><text class="font-green">{{productInfo.fisher_info.nickname}}</text><text>{{productInfo.product_type==1?'提供':'赞助'}}，</text><text
 			 class="font-green">{{productInfo.fisher_info.nickname}}</text><text>发货并提供售后服务。</text></view>
 		<u-gap height="16"></u-gap>
 		<view class="default-window white flex place">
+			<view class="u-font-24" style="width: 130rpx;">邮费</view>
+			<view class="u-font-12 u-tips-color">
+				{{freight_tpl.name}}
+			</view>
+		</view>
+		<view @click="skuShow=true;" class="default-window white flex place">
 			<view class="u-font-24" style="width: 130rpx;">购买类型</view>
 			<view>
 				<u-icon name="arrow-right" size="24"></u-icon>
@@ -46,10 +55,8 @@
 		</view>
 		<u-gap height="16"></u-gap>
 		<view class="detail-desc">
-			<view class="d-header">
-				<text>图文详情</text>
-			</view>
-			<view>
+
+			<view class="default-window">
 				<u-parse :html="productInfo.description"></u-parse>
 			</view>
 		</view>
@@ -57,17 +64,25 @@
 		<!-- 底部操作菜单 -->
 		<view class="page-bottom">
 			<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
-				<u-icon name="home"></u-icon>
+				<u-icon size="40" name="home"></u-icon>
 				<text>首页</text>
 			</navigator>
-			<navigator url="/pages/usercenter/customer/customer" hover-class="none" class="p-b-btn">
-				<u-icon name="kefu-ermai"></u-icon>
+			<view @click="callService" class="p-b-btn">
+				<u-icon size="40" name="kefu-ermai"></u-icon>
 				<text>客服</text>
-			</navigator>
-			<view class="p-b-btn">
 			</view>
+			<navigator url="/pages/cart/cart" hover-class="none" class="p-b-btn" style="position: relative;">
+				<u-icon size="40" name="shopping-cart"></u-icon>
+				<text>购物车</text>
+				<u-badge type="error" :count="1" size="mini" :offset="[-10,0]"></u-badge>
+			</navigator>
 			<view class="action-btn-group">
-				<button @click="skuShow=true" type="primary" class=" action-btn no-border buy-now-btn">立即购买</button>
+				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='cart'" type="primary"
+				 class=" action-btn  cart-btn ">加入购物车</view>
+				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='buy'" type="primary"
+				 class=" action-btn buy-btn ">立即购买</view>
+				<view v-if="productInfo.product_type==2" style="width: 360upx;" @click="skuShow=true;type='buy'" type="primary"
+				 class=" action-btn buy-btn ">立即购买</view>
 			</view>
 		</view>
 		<u-popup :closeable="true" mode="bottom" v-model="skuShow">
@@ -97,7 +112,7 @@
 				</view>
 			</view>
 			<view class="default-window">
-				<u-button @click="sattlement" type="success" shape="circle">确定</u-button>
+				<u-button @click="sattlement" :type="type=='buy'?'success':'warning'" shape="circle">{{type=='buy'?'立即购买':'加入购物车'}}</u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -110,7 +125,7 @@
 				skuShow: false,
 				loadId: '',
 				productInfo: {
-					
+
 					fisher_info: {},
 					img_list: [{
 						url: ''
@@ -134,16 +149,30 @@
 					skuArray: '',
 					skuTexy: '',
 				},
+				type: 'buy',
+				freight_tpl: {
+					name: ''
+				}
 			};
 		},
 		onLoad(data) {
 			this.loadId = data.loadId;
-			this.$store.commit('setSn', {
-				ref_sn: data.sn
-			})
+			if (data.sn) {
+				this.$store.commit('setSn', {
+					ref_sn: data.sn
+				})
+			} else {
+				console.log('无sn')
+			}
 		},
 		onReady() {
 			this.loadProduct();
+		},
+		onShareTimeline() {
+			return {
+				title: this.productInfo.name,
+				path: `/pages/product/detail?loadId=${this.productInfo.product_id}&&sn=${uni.getStorageSync('sn')}`,
+			}
 		},
 		onShareAppMessage() {
 			return {
@@ -153,6 +182,20 @@
 			}
 		},
 		methods: {
+			//拨打客服电话
+			callService() {
+				let that = this;
+				uni.makePhoneCall({
+					phoneNumber: that.productInfo.fisher_info.service_phone
+				})
+			},
+			openMini() {
+				let id = this.productInfo.fisher_id;
+				wx.navigateToMiniProgram({
+					appId: 'wx55b0503ceeb1e360',
+					path: '/pages/fisher/detail?loadId=' + id,
+				})
+			},
 			goSubmit() {
 				uni.navigateTo({
 					url: '/pages/product/settlement'
@@ -169,6 +212,7 @@
 						this.skuArray = data.data.sku;
 						this.provider = data.data.provider;
 						this.priceInfo = data.data.product_detail;
+						this.freight_tpl = data.data.freight_tpl;
 						if (!this.skuArray) {
 							this.isChooseSku = true;
 						}
@@ -177,11 +221,11 @@
 						});
 					} else {
 						this.$showToast(data.msg);
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.navigateBack({
-								
+
 							})
-						},1000)
+						}, 1000)
 					}
 				})
 			},
@@ -208,26 +252,34 @@
 					this.$showToast('请先选择规格');
 					return;
 				}
+				let type = this.type == 'buy' ? 1 : 2;
 				let params = {
 					product_id: this.productInfo.product_id,
 					num: this.num,
 					sku_array: this.paySkuInfo.skuArray,
+					type: type
 				};
 				this.$api('Product/check', params).then(data => {
 					if (data.status == 1) {
-						let skuId = '';
-						if (this.priceInfo) {
-							skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
+						if (type == 1) {
+							let skuId = '';
+							if (this.priceInfo) {
+								skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
+							}
+							this.$store.commit('chooseProduct', {
+								product: this.productInfo,
+								num: this.num,
+								sku: this.paySkuInfo,
+								skuId: skuId,
+							})
+							uni.navigateTo({
+								url: '/pages/product/settlement'
+							})
+						} else {
+							this.skuShow = false;
+							this.$showToast('已成功加入购物车');
 						}
-						this.$store.commit('chooseProduct', {
-							product: this.productInfo,
-							num: this.num,
-							sku: this.paySkuInfo,
-							skuId: skuId,
-						})
-						uni.navigateTo({
-							url:'/pages/product/settlement'
-						})
+
 					} else {
 						this.$showToast(data.msg);
 					}
@@ -320,6 +372,7 @@
 	.origal-price {
 		text-decoration: line-through;
 		margin-left: 20rpx;
+		color: #808080;
 	}
 
 	.detail-desc {
@@ -400,9 +453,9 @@
 			height: 76upx;
 			border-radius: 100px;
 			overflow: hidden;
-			box-shadow: 0 20upx 40upx -16upx #fa436a;
-			box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
-			background: linear-gradient(to right, #19be6b, #18b566);
+			color: #FFFFFF;
+
+
 
 			margin-left: 20upx;
 			position: relative;
@@ -421,12 +474,24 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				width: 360upx;
+
 				height: 100%;
 				font-size: 26rpx;
 				padding: 0;
 				border-radius: 0;
 				background: transparent;
+			}
+
+			.buy-btn {
+				background: linear-gradient(to right, #19be6b, #18b566);
+			}
+
+			.cart-btn {
+				background: linear-gradient(to right, #ff9900, #f29100);
+			}
+
+			.no-border {
+				border: none;
 			}
 		}
 	}
