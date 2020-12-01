@@ -8,9 +8,13 @@
 			<u-empty mode="car" text="购物车为空"></u-empty>
 		</view>
 
-		<view class="card">
+		<view class="card" v-for="(item,index) in cart" :key="index">
+			<view class="flex default-window">
+				<image :src="item.fisher_info.headimgurl" mode="widthFix" style="width: 70rpx;height: 70rpx;display: block;border-radius: 50%;"></image>
+				<view style="margin-left: 10rpx;">{{item.fisher_info.nickname}}</view>
+			</view>
 			<checkbox-group @change="checkboxGroupChange">
-				<view v-for="(item,index) in cart" :key="index" class="default-window flex">
+				<view  class="default-window flex">
 					<view>
 						<checkbox :value="item.cart_id" style="transform:scale(0.7)" />
 					</view>
@@ -114,7 +118,7 @@
 			},
 			//计算总价
 			countTotal() {
-				this.totalPrice = 0;
+				/* this.totalPrice = 0;
 				this.$showLoading();
 				for (let m in this.cart) {
 					let index = this.chooseItem.indexOf(this.cart[m].cart_id.toString());
@@ -123,7 +127,7 @@
 						this.totalPrice = (parseFloat(this.totalPrice) + parseFloat(singlePrice)).toFixed(2);
 					}
 				}
-				this.$showHide();
+				this.$showHide(); */
 			},
 			checkboxGroupChange(e) {
 				this.chooseItem = e.detail.value;

@@ -25,7 +25,7 @@
 				carouselList: [],
 				modalList: [],
 				productList: [],
-				page: 1,
+				page: 0,
 				searchValue: ''
 			}
 		},
@@ -41,12 +41,15 @@
 				} else {
 					console.log('无sn')
 				}
-			
+
 			}
 		},
 		onReady() {
 			this.loadCarousel();
 			this.loadModal();
+			this.loadProduct();
+		},
+		onReachBottom() {
 			this.loadProduct();
 		},
 		methods: {
@@ -116,13 +119,18 @@
 			},
 			//加载商品列表
 			loadProduct() {
+				this.page = this.page + 1;
 				let params = {
 					page: this.page,
 					product_type: 1
 				}
 				this.$api('Product/lists', params).then(data => {
 					if (data.status == 1) {
-						this.productList = data.data.product_list;
+						// this.productList = data.data.product_list;
+						let product = data.data.product_list;
+						for (let m in product) {
+							this.productList.push(product[m]);
+						}
 					} else {
 						this.$showToast(data.msg);
 					}

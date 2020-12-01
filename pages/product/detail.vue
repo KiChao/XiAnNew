@@ -7,7 +7,7 @@
 		</swiper>
 		<view class="default-window white">
 			<view class="product-name">{{productInfo.name||''}}</view>
-			<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
+			<view class="u-font-12 u-tips-color">{{productInfo.slogan||''}}</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex">
 				<view class="price"><text class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}</view>
@@ -17,8 +17,14 @@
 			<view class="flex" v-if="productInfo.product_type==2 && productInfo.limit_lv>0">
 				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">以上的用户可兑换</text>
 			</view>
-			<view class="flex" v-if="productInfo.product_type==1">
+			<!-- <view class="flex" v-if="productInfo.product_type==1">
 				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">专享价</text>
+			</view> -->
+			<u-gap height="16"></u-gap>
+			<view class="flex flexwarp">
+				<view v-for="(label,tip) in productInfo.labelList" :key="tip" class="tag-item">
+					<u-tag :text="label" mode="dark" shape="circle" type="success"></u-tag>
+				</view>
 			</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex place u-font-12 u-tips-color">
@@ -213,6 +219,12 @@
 						this.provider = data.data.provider;
 						this.priceInfo = data.data.product_detail;
 						this.freight_tpl = data.data.freight_tpl;
+						let temp = this.productInfo.tag;
+						if (temp) {
+							this.productInfo.labelList = temp.split(',');
+						} else {
+							this.productInfo.labelList = [];
+						}
 						if (!this.skuArray) {
 							this.isChooseSku = true;
 						}
@@ -494,5 +506,8 @@
 				border: none;
 			}
 		}
+	}
+	.tag-item {
+		margin-right: 10rpx;
 	}
 </style>
