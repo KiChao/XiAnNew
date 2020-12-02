@@ -1,25 +1,25 @@
 <template>
 	<view>
 		<view class="default-window flex place">
-			<view class="u-font-12">共{{cart.length}}件宝贝</view>
+			<view class="u-font-12"></view>
 			<view @click="cartEdit=!cartEdit;">{{cartEdit?'完成':'管理'}}</view>
 		</view>
 		<view class="u-padding-80" v-if="cart.length==0">
 			<u-empty mode="car" text="购物车为空"></u-empty>
 		</view>
 
-		<view class="card" v-for="(item,index) in cart" :key="index">
+		<view class="card" v-for="(fisher,tip) in cart" :key="tip">
 			<view class="flex default-window">
-				<image :src="item.fisher_info.headimgurl" mode="widthFix" style="width: 70rpx;height: 70rpx;display: block;border-radius: 50%;"></image>
-				<view style="margin-left: 10rpx;">{{item.fisher_info.nickname}}</view>
+				<image :src="fisher.fisher_info.headimgurl" mode="widthFix" style="width: 70rpx;height: 70rpx;display: block;border-radius: 50%;"></image>
+				<view style="margin-left: 10rpx;">{{fisher.fisher_info.nickname}}</view>
 			</view>
 			<checkbox-group @change="checkboxGroupChange">
-				<view  class="default-window flex">
+				<view v-for="(item,index) in fisher.cart" :key="index" class="default-window flex">
 					<view>
 						<checkbox :value="item.cart_id" style="transform:scale(0.7)" />
 					</view>
 					<view class="cart-image">
-						<u-image :src="item.product.image" mode="widthFix" width="150rpx" border-radius="16" height="150rpx"></u-image>
+						<u-image :src="item.product.img_info[0].url" mode="widthFix" width="150rpx" border-radius="16" height="150rpx"></u-image>
 					</view>
 					<view class="cart-name" style="align-items: flex-start;">
 						<view class="bold">{{item.product.name}}</view>
@@ -118,19 +118,24 @@
 			},
 			//计算总价
 			countTotal() {
-				/* this.totalPrice = 0;
+				 this.totalPrice = 0;
 				this.$showLoading();
 				for (let m in this.cart) {
-					let index = this.chooseItem.indexOf(this.cart[m].cart_id.toString());
-					if (index != -1) {
-						let singlePrice = (parseFloat(this.cart[m].product.discount_price) * parseInt(this.cart[m].num)).toFixed(2);
-						this.totalPrice = (parseFloat(this.totalPrice) + parseFloat(singlePrice)).toFixed(2);
+					let temp = this.cart[m].cart
+					for(let n in temp){
+						let index = this.chooseItem.indexOf(temp[n].cart_id.toString());
+						if (index != -1) {
+							let singlePrice = (parseFloat(temp[n].product.discount_price) * parseInt(temp[n].num)).toFixed(2);
+							this.totalPrice = (parseFloat(this.totalPrice) + parseFloat(singlePrice)).toFixed(2);
+						}
 					}
+					
 				}
-				this.$showHide(); */
+				this.$showHide(); 
 			},
 			checkboxGroupChange(e) {
 				this.chooseItem = e.detail.value;
+				console.log(this.chooseItem)
 				this.countTotal();
 			},
 			blur(data) {

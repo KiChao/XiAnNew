@@ -270,6 +270,7 @@
 					this.$api('Order/cancel', params).then(data => {
 						if (data.status == 1) {
 							this.$showToast(data.msg);
+							this.loadOrder();
 						} else {
 							this.$showToast(data.msg);
 						}

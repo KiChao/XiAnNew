@@ -60,33 +60,18 @@
 				})
 			},
 			//模块与轮播跳转
-			linkJump(type, loadId) {
-				let href = '';
+			jumpLink(type, value, path = 'pages/index/index') {
 				switch (type) {
-					case 'product':
-						href = '/pages/product/detail?loadId=';
-						uni.navigateTo({
-							url: href + loadId
-						})
-						break;
-					case 'cate':
-						href = '/pages/product/product?loadId=';
-						uni.navigateTo({
-							url: href + loadId
-						})
-						break;
 					case 'miniProgram':
 						wx.navigateToMiniProgram({
 							appId: value,
 							path: path,
 						})
 						break;
-					case 'other':
+					default:
 						uni.navigateTo({
 							url: value
 						})
-						break;
-					default:
 						break;
 				}
 			},
