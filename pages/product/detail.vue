@@ -7,7 +7,7 @@
 		</swiper>
 		<view class="default-window white">
 			<view class="product-name">{{productInfo.name||''}}</view>
-			<view class="u-font-12 u-tips-color">{{productInfo.slogan||''}}</view>
+			<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex">
 				<view class="price"><text class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}</view>
@@ -17,9 +17,9 @@
 			<view class="flex" v-if="productInfo.product_type==2 && productInfo.limit_lv>0">
 				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">以上的用户可兑换</text>
 			</view>
-			<!-- <view class="flex" v-if="productInfo.product_type==1">
-				<level-tag :level="productInfo.limit_lv"></level-tag><text style="margin-left: 10rpx;">专享价</text>
-			</view> -->
+			<view class="flex" v-if="productInfo.product_type==1">
+				<level-tag :level="userLv"></level-tag><text style="margin-left: 10rpx;">专享价</text>
+			</view>
 			<u-gap height="16"></u-gap>
 			<view class="flex flexwarp">
 				<view v-for="(label,tip) in productInfo.labelList" :key="tip" class="tag-item">
@@ -80,7 +80,7 @@
 			<navigator url="/pages/cart/cart" hover-class="none" class="p-b-btn" style="position: relative;">
 				<u-icon size="40" name="shopping-cart"></u-icon>
 				<text>购物车</text>
-				<u-badge type="error" :count="1" size="mini" :offset="[-10,0]"></u-badge>
+				<u-badge type="error" :count="cartNum" size="mini" :offset="[-10,0]"></u-badge>
 			</navigator>
 			<view class="action-btn-group">
 				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='cart'" type="primary"
@@ -88,7 +88,7 @@
 				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='buy'" type="primary"
 				 class=" action-btn buy-btn ">立即购买</view>
 				<view v-if="productInfo.product_type==2" style="width: 360upx;" @click="skuShow=true;type='buy'" type="primary"
-				 class=" action-btn buy-btn ">立即购买</view>
+				 class=" action-btn buy-btn ">立即兑换</view>
 			</view>
 		</view>
 		<u-popup :closeable="true" mode="bottom" v-model="skuShow">
@@ -137,6 +137,7 @@
 						url: ''
 					}]
 				},
+				userLv: 0,
 				num: 1,
 				//显示的规格列表
 				skuArray: [],
@@ -158,7 +159,8 @@
 				type: 'buy',
 				freight_tpl: {
 					name: ''
-				}
+				},
+				cartNum: 0,
 			};
 		},
 		onLoad(data) {
@@ -173,6 +175,7 @@
 		},
 		onReady() {
 			this.loadProduct();
+			this.getCartNum();
 		},
 		onShareTimeline() {
 			return {
@@ -188,6 +191,16 @@
 			}
 		},
 		methods: {
+			//获取购物车数量
+			getCartNum() {
+				this.$api('Cart/num').then(data => {
+					if (data.status == 1) {
+						this.cartNum = data.data.num;
+					} else {
+						this.$showToast(data.msg);
+					}
+				})
+			},
 			//拨打客服电话
 			callService() {
 				let that = this;
@@ -219,6 +232,7 @@
 						this.provider = data.data.provider;
 						this.priceInfo = data.data.product_detail;
 						this.freight_tpl = data.data.freight_tpl;
+						this.userLv = data.data.lv;
 						let temp = this.productInfo.tag;
 						if (temp) {
 							this.productInfo.labelList = temp.split(',');
@@ -290,6 +304,7 @@
 						} else {
 							this.skuShow = false;
 							this.$showToast('已成功加入购物车');
+							this.getCartNum();
 						}
 
 					} else {
@@ -507,6 +522,7 @@
 			}
 		}
 	}
+
 	.tag-item {
 		margin-right: 10rpx;
 	}

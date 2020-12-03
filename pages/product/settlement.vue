@@ -135,12 +135,10 @@
 
 				let that = this;
 				this.$showModal('是否提交订单？', () => {
-					uni.showLoading({
-						title: '跳转支付'
-					});
+					
 					if (that.addressInfo.addressId == 0) {
 						that.$showToast('请选择收货地址');
-						uni.hideLoading();
+						
 						return;
 					}
 					let product = [];
@@ -167,8 +165,8 @@
 								if (data.status == 1) {
 									uni.hideLoading();
 									this.$pay(data.data.response).then(data => {
-										uni.reLaunch({
-											url: '/pages/public/success/success'
+										uni.switchTab({
+											url: '/pages/usercenter/usercenter'
 										})
 									}).catch(res => {
 										uni.switchTab({

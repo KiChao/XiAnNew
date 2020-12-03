@@ -39,7 +39,7 @@
 		onLoad(data) {
 			this.type = data.type || 'add';
 		},
-		onReady() {
+		onShow() {
 			this.loadAddressList();
 		},
 		methods: {

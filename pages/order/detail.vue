@@ -71,6 +71,14 @@
 							<view class="font-red bold">￥{{item.discount_price}}</view>
 							<view class="u-font-11">×{{item.num}}</view>
 						</view>
+						<view  class="flex place">
+							<view></view>
+							<view>
+								<u-button v-if="orderInfo.order_type==1 && item.status==1" @click="refund(item.order_product_id)" size="mini">退款</u-button>
+								<text v-if="item.status==8" class="u-tips-color u-font-12">退款中</text>
+								<text v-if="item.status==9" class="u-tips-color u-font-12">退款成功</text>
+							</view>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -92,6 +100,7 @@
 			<view></view>
 			<view class="flex around">
 				<u-button v-if="orderInfo.status==0" class="btn">取消订单</u-button>
+				<u-button v-if="orderInfo.status==1" class="btn" @click="refundAll">整单退款</u-button>
 				<u-button @click="payOrder(orderInfo.no)" v-if="orderInfo.status==0" type="success" class="btn">立即支付</u-button>
 				<u-button @click="confirmOrder(orderInfo.order_id)" v-if="orderInfo.status==2" type="success" class="btn">确认收货</u-button>
 			</view>
@@ -125,10 +134,40 @@
 			this.loadOrder();
 		},
 		methods: {
+			//单品退款
+			refund(id) {
+				this.$showModal('是否退款该笔商品？', () => {
+					let params = {
+						order_product_id: id
+					}
+					this.$api('Order/refund', params).then(data => {
+						if (data.status == 1) {
+							this.loadOrder();
+						} else {
+							this.$showToast(data.msg);
+						}
+					})
+				})
+			},
+			//整单退款
+			refundAll() {
+				this.$showModal('是否将整个订单的产品进行退款？', () => {
+					let params = {
+						order_id: this.orderInfo.order_id
+					}
+					this.$api('Order/refund', params).then(data => {
+						if (data.status == 1) {
+							this.loadOrder();
+						} else {
+							this.$showToast(data.msg);
+						}
+					})
+				})
+			},
 			//支付订单
 			payOrder(no) {
 				this.$showModal('是否支付该笔订单？', () => {
-			
+
 					let params = {
 						is_mini: 1,
 						no: no
@@ -155,7 +194,7 @@
 						} else {
 							this.$showToast(data.msg);
 						}
-			
+
 					})
 				})
 			},
@@ -185,7 +224,7 @@
 			},
 			//确认收货
 			confirmOrder(id) {
-				this.$showModal('是否确认收货此商品？',()=>{
+				this.$showModal('是否确认收货此商品？', () => {
 					let params = {
 						order_id: id
 					};

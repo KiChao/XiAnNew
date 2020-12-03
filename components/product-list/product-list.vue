@@ -17,19 +17,20 @@
 
 				</view> -->
 				<u-row gutter="20">
-					<u-col span="4" v-for="(image,tip) in item.img_info.slice(0,3)" :key="tip">
+					<u-col  @click="checkProduct(item.product_id)" span="4" v-for="(image,tip) in item.img_info.slice(0,3)" :key="tip">
 						<u-image width="100%" :src="image.url" mode="widthFix"></u-image>
 					</u-col>
 				</u-row>
 			</view>
 			<view class="default-window">
-				<view class="u-font-11 u-tips-color">{{item.slogan||''}}</view>
+				<view class="u-font-11 u-tips-color">{{item.subtitle||''}}</view>
 				<u-gap height="16"></u-gap>
 				<view class="flex place">
 					<view class="font-red bold flex">
 						<view v-if="item.product_type==1" class="u-font-12">￥</view>
 						<view class="u-font-17">{{item.discount_price}}</view>
 						<view v-if="item.product_type==2" class="u-font-12">鱼仔</view>
+						<view style="padding-left: 20rpx;text-decoration: line-through;" class="u-tips-color u-font-sm">￥{{item.original_price}}</view>
 					</view>
 					<view class="u-font-11">
 						已售{{item.sv_total_num}} / 剩余{{item.stock}}
@@ -50,6 +51,13 @@
 		props: {
 			productList: {
 				type: Array
+			}
+		},
+		methods:{
+			checkProduct(id){
+				uni.navigateTo({
+					url:`/pages/product/detail?loadId=${id}`
+				})
 			}
 		},
 		computed: {

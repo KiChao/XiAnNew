@@ -2,13 +2,13 @@
 	<view>
 		<search-bar></search-bar>
 		<swiper style="height: 56vw;" autoplay>
-			<swiper-item @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in carouselList"
+			<swiper-item @tap="jumpLink(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in carouselList"
 			 :key="index">
 				<image :src="item.img_url" class="image" mode="widthFix"></image>
 			</swiper-item>
 		</swiper>
 		<view class="modal-window">
-			<view @tap="linkJump(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in modalList" :key="index"
+			<view @tap="jumpLink(item.href_type,item.href_value,item.href_path)" v-for="(item,index) in modalList" :key="index"
 			 :style="{width: `${item.width}%`}">
 
 				<image :fade="false" :src="item.img_url" class="image" mode="widthFix"></image>

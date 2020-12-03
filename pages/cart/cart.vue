@@ -7,13 +7,12 @@
 		<view class="u-padding-80" v-if="cart.length==0">
 			<u-empty mode="car" text="购物车为空"></u-empty>
 		</view>
-
-		<view class="card" v-for="(fisher,tip) in cart" :key="tip">
-			<view class="flex default-window">
-				<image :src="fisher.fisher_info.headimgurl" mode="widthFix" style="width: 70rpx;height: 70rpx;display: block;border-radius: 50%;"></image>
-				<view style="margin-left: 10rpx;">{{fisher.fisher_info.nickname}}</view>
-			</view>
-			<checkbox-group @change="checkboxGroupChange">
+		<checkbox-group @change="checkboxGroupChange">
+			<view class="card" v-for="(fisher,tip) in cart" :key="tip">
+				<view class="flex default-window">
+					<image :src="fisher.fisher_info.headimgurl" mode="widthFix" style="width: 70rpx;height: 70rpx;display: block;border-radius: 50%;"></image>
+					<view style="margin-left: 10rpx;">{{fisher.fisher_info.nickname}}</view>
+				</view>
 				<view v-for="(item,index) in fisher.cart" :key="index" class="default-window flex">
 					<view>
 						<checkbox :value="item.cart_id" style="transform:scale(0.7)" />
@@ -37,9 +36,8 @@
 						</view>
 					</view>
 				</view>
-			</checkbox-group>
-		</view>
-
+			</view>
+		</checkbox-group>
 		<view class="default-window bottom-btn white flex place">
 			<view class="flex">
 				合计：<text class="font-red">￥</text><text class="font-red u-font-40">{{totalPrice}}</text><text class="u-font-22 u-tips-color">（不含运费）</text>
@@ -62,7 +60,7 @@
 				cart: [],
 				chooseItem: [],
 				totalPrice: 0,
-				
+
 			};
 		},
 		onShow() {
@@ -101,8 +99,8 @@
 					})
 				})
 			},
-			del(id){
-				this.$showModal('是否删除？',()=>{
+			del(id) {
+				this.$showModal('是否删除？', () => {
 					let params = {
 						cart_id: id,
 						num: 0
@@ -118,20 +116,20 @@
 			},
 			//计算总价
 			countTotal() {
-				 this.totalPrice = 0;
+				this.totalPrice = 0;
 				this.$showLoading();
 				for (let m in this.cart) {
 					let temp = this.cart[m].cart
-					for(let n in temp){
+					for (let n in temp) {
 						let index = this.chooseItem.indexOf(temp[n].cart_id.toString());
 						if (index != -1) {
 							let singlePrice = (parseFloat(temp[n].product.discount_price) * parseInt(temp[n].num)).toFixed(2);
 							this.totalPrice = (parseFloat(this.totalPrice) + parseFloat(singlePrice)).toFixed(2);
 						}
 					}
-					
+
 				}
-				this.$showHide(); 
+				this.$showHide();
 			},
 			checkboxGroupChange(e) {
 				this.chooseItem = e.detail.value;

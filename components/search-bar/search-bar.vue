@@ -20,8 +20,14 @@
 				searchValue: '',
 			};
 		},
-		onReady() {
-			
+		onShow() {
+			this.$api('Cart/num').then(data => {
+				if (data.status == 1) {
+					
+				} else {
+					this.$showToast(data.msg);
+				}
+			})
 		},
 		methods: {
 			//点击搜索按钮

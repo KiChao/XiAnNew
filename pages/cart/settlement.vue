@@ -18,11 +18,12 @@
 				</view>
 			</view>
 		</navigator>
-		<view class="card">
-			<view v-for="(product,tip) in productList" :key="tip" class="u-border-bottom">
+		<view class="card" v-for="(item,tip) in productList" :key="tip">
+			<view class="default-window">{{item.fisher_name}}</view>
+			<view v-for="(product,index) in item.product" class="u-border-bottom">
 				<view class="default-window flex" style="align-items: flex-start;">
 					<view class="product-image">
-						<image :src="product.image" class="image" mode="widthFix"></image>
+						<image :src="product.img_info.url" class="image" mode="widthFix"></image>
 					</view>
 					<view class="product-name">
 						<view>{{product.name}}</view>
@@ -40,7 +41,7 @@
 			</view>
 			<view class="default-window flex place">
 				<view></view>
-				<view>共{{productList.length}}件商品</view>
+				<view>共{{item.product_count}}件商品</view>
 			</view>
 		</view>
 		<view class="card">
@@ -53,9 +54,9 @@
 					<view style="margin-left: 10rpx;">
 						<u-tag mode="dark" shape="circle" @click="payType=2" :type="payType==2?'success':'info'" text="微信支付"></u-tag>
 					</view>
-					<view style="margin-left: 10rpx;">
+					<!-- <view style="margin-left: 10rpx;">
 						<u-tag mode="dark" shape="circle" @click="payType=3" :type="payType==3?'success':'info'" text="钱包余额"></u-tag>
-					</view>
+					</view> -->
 
 				</view>
 			</view>
@@ -108,34 +109,43 @@
 			return {
 				cartArray: this.$store.state.product.cartArray,
 				cartProduct: this.$store.state.product.cartProduct,
-				
+
 				productList: [],
 				totalPrice: 0,
 				totalFee: 0,
 
 				remark: '', //备注
-				addressInfo: {
+				/* addressInfo: {
 					addressId: 0
-				},
-				payType: 3
+				}, */
+				payType: 2
 			};
 		},
+		computed: {
+			addressInfo() {
+				return this.$store.state.address.address;
+			}
+		},
 		onShow() {
-			this.addressInfo = this.$store.state.address.address;
-			let that = this;
-			let params = {
-				address_id: that.addressInfo.addressId,
-				product: JSON.stringify(this.cartProduct),
-				is_cart: 1
-			};
-			this.$api('Order/freight', params).then(data => {
-				if (data.status == 1) {
-					this.totalFee = data.data.freight;
-				} else {
-					this.$showToast(data.msg);
-				}
 
-			});
+			if (this.addressInfo.addressId != 0) {
+				// this.addressInfo = this.$store.state.address.address;
+				let that = this;
+				let params = {
+					address_id: that.addressInfo.addressId,
+					product_list: JSON.stringify(this.cartArray),
+					is_cart: 1
+				};
+				this.$api('Order/get_freight', params).then(data => {
+					if (data.status == 1) {
+						this.totalFee = data.data.freight;
+					} else {
+						this.$showToast(data.msg);
+					}
+
+				});
+			}
+
 		},
 		onReady() {
 			this.createSettlement();
@@ -146,29 +156,31 @@
 
 				let that = this;
 				this.$showModal('是否提交订单？', () => {
-					uni.showLoading({
-						title: '跳转支付'
-					}); 
+					
 					if (that.addressInfo.addressId == 0) {
 						that.$showToast('请选择收货地址');
-						uni.hideLoading();
+						
 						return;
 					}
 					let product = [];
-					let ptemp = that.productList
-					for (let n in ptemp) {
-						let temp = `${ptemp[n].product_id}_${ptemp[n].product_detail_id}_${ptemp[n].num}`;
-						product.push(temp);
+					let ftemp = that.productList;
+					for (let m in ftemp) {
+						let ptemp = ftemp[m].product;
+						for (let n in ptemp) {
+							let temp = `${ptemp[n].product_id}_${ptemp[n].product_detail_id}_${ptemp[n].num}`;
+							product.push(temp);
+						}
 					}
+
 					let params = {
 						address_id: that.addressInfo.addressId,
 						product_list: JSON.stringify(product),
-						remark:that.remark
+						remark: that.remark
 					};
 					that.$api('Order/create', params).then(data => {
 						if (data.status == 1) {
 
-							let no = data.data.no;
+							let no = data.data.pay_no;
 							let params = {
 								pay_type: that.payType,
 								no: no
@@ -177,8 +189,8 @@
 								if (data.status == 1) {
 									uni.hideLoading();
 									this.$pay(data.data.response).then(data => {
-										uni.reLaunch({
-											url: '/pages/public/success'
+										uni.switchTab({
+											url: '/pages/usercenter/usercenter'
 										})
 									}).catch(res => {
 										uni.switchTab({
@@ -209,11 +221,11 @@
 				};
 				this.$api('Order/settlement', params).then(data => {
 					if (data.status == 1) {
-						this.productList = data.data.product_data;
+						this.productList = data.data.product_list;
 						this.totalPrice = data.data.all_price;
 						this.totalFee = data.data.freight;
-						if (data.data.address.length != 0) {
-							let address = data.data.address[0];
+						/* if (data.data.address_list.length != 0) {
+							let address = data.data.address_list[0];
 							this.$store.commit('chooseAddress', {
 								name: address.name,
 								phone: address.phone,
@@ -222,7 +234,7 @@
 							});
 							this.addressInfo = this.$store.state.address.address;
 
-						}
+						} */
 					} else {
 						this.$showToast(data.msg);
 					}
