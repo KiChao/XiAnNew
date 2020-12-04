@@ -16,7 +16,7 @@
 			<view class="flex place default-window u-font-sm">
 				<view></view>
 				<view class="flex">
-					<!-- <navigator hover-class="none" :url="`/pages/address/edit?loadId=${item.address_id}&&type=edit`">编辑</navigator> -->
+					<navigator hover-class="none" :url="`/pages/address/edit?loadId=${item.address_id}&&type=edit`">编辑</navigator>
 					<view @click="delAddress(item.address_id)" style="margin-left: 30rpx;">删除</view>
 				</view>
 			</view>

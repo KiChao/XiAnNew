@@ -39,7 +39,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="default-window flex place">
+			<view class="default-window flex place u-border-bottom">
 				<view>共{{item.product_count}}件商品</view>
 				<view class="flex">
 					<view>合计</view>
@@ -47,17 +47,18 @@
 					<view>{{type==1?'元':'鱼仔'}}</view>
 				</view>
 			</view>
+			<view class="default-window  flex place">
+				<view>订单备注</view>
+				<view style="flex: 1;">
+					<u-input v-model="item.remark" input-align='right' placeholder="请输入备注信息"></u-input>
+				</view>
+			</view>
 		</view>
 		<view class="card">
 			<view class="default-window u-border-bottom">
 				<u-section title="订单信息" :right="false" line-color="#19be6b"></u-section>
 			</view>
-			<view class="default-window flex place">
-				<view>订单备注</view>
-				<view style="flex: 1;">
-					<u-input v-model="desc" input-align='right' placeholder="请输入备注信息"></u-input>
-				</view>
-			</view>
+			
 			<view class="default-window flex place">
 				<view>订单运费</view>
 				<view>{{totalFee==0?'免运费':totalFee+'元'}}</view>
@@ -135,14 +136,22 @@
 
 				let that = this;
 				this.$showModal('是否提交订单？', () => {
-					
+
 					if (that.addressInfo.addressId == 0) {
 						that.$showToast('请选择收货地址');
-						
+
 						return;
 					}
 					let product = [];
+					let remarkList = [];
+
 					for (let m in that.providerList) {
+						let remark = {
+							fisher_id: that.providerList[m].fisher_id,
+							remark: that.providerList[m].remark,
+						}
+						remarkList.push(remark);
+
 						let ptemp = that.providerList[m].product
 						for (let n in ptemp) {
 							let temp = `${ptemp[n].product_id}_${ptemp[n].product_detail_id}_${ptemp[n].num}`;
@@ -152,6 +161,7 @@
 					let params = {
 						address_id: that.addressInfo.addressId,
 						product_list: JSON.stringify(product),
+						remark: JSON.stringify(remarkList),
 					};
 					that.$api('Order/create', params).then(data => {
 						if (data.status == 1) {

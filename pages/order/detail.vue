@@ -99,7 +99,7 @@
 		<view class="default-window flex place">
 			<view></view>
 			<view class="flex around">
-				<u-button v-if="orderInfo.status==0" class="btn">取消订单</u-button>
+				<u-button v-if="orderInfo.status==0" @click="cancelOrder" class="btn">取消订单</u-button>
 				<u-button v-if="orderInfo.status==1" class="btn" @click="refundAll">整单退款</u-button>
 				<u-button @click="payOrder(orderInfo.no)" v-if="orderInfo.status==0" type="success" class="btn">立即支付</u-button>
 				<u-button @click="confirmOrder(orderInfo.order_id)" v-if="orderInfo.status==2" type="success" class="btn">确认收货</u-button>
@@ -134,6 +134,23 @@
 			this.loadOrder();
 		},
 		methods: {
+			//订单取消
+			cancelOrder() {
+				this.$showModal('是否取消该笔订单？', () => {
+					let params = {
+						order_id: this.loadId
+					};
+					this.$api('Order/cancel', params).then(data => {
+						if (data.status == 1) {
+							this.$showToast(data.msg);
+							this.loadOrder();
+						} else {
+							this.$showToast(data.msg);
+						}
+					});
+				})
+			
+			},
 			//单品退款
 			refund(id) {
 				this.$showModal('是否退款该笔商品？', () => {

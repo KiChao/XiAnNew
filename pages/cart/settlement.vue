@@ -20,7 +20,7 @@
 		</navigator>
 		<view class="card" v-for="(item,tip) in productList" :key="tip">
 			<view class="default-window">{{item.fisher_name}}</view>
-			<view v-for="(product,index) in item.product" class="u-border-bottom">
+			<view v-for="(product,index) in item.product" :key="index" class="u-border-bottom">
 				<view class="default-window flex" style="align-items: flex-start;">
 					<view class="product-image">
 						<image :src="product.img_info.url" class="image" mode="widthFix"></image>
@@ -39,9 +39,16 @@
 					</view>
 				</view>
 			</view>
-			<view class="default-window flex place">
+
+			<view class="default-window u-border-bottom flex place">
 				<view></view>
 				<view>共{{item.product_count}}件商品</view>
+			</view>
+			<view class="default-window  flex place">
+				<view>订单备注</view>
+				<view style="flex: 1;">
+					<u-input v-model="item.remark" input-align='right' placeholder="请输入备注信息"></u-input>
+				</view>
 			</view>
 		</view>
 		<view class="card">
@@ -65,12 +72,7 @@
 			<view class="default-window u-border-bottom">
 				<u-section title="订单信息" :right="false" line-color="#19be6b"></u-section>
 			</view>
-			<view class="default-window flex place">
-				<view>订单备注</view>
-				<view style="flex: 1;">
-					<u-input v-model="remark" input-align='right' placeholder="请输入备注信息"></u-input>
-				</view>
-			</view>
+
 			<view class="default-window flex place">
 				<view>订单运费</view>
 				<view>{{totalFee==0?'免运费':totalFee+'元'}}</view>
@@ -156,15 +158,22 @@
 
 				let that = this;
 				this.$showModal('是否提交订单？', () => {
-					
+
 					if (that.addressInfo.addressId == 0) {
 						that.$showToast('请选择收货地址');
-						
+
 						return;
 					}
 					let product = [];
+					let remarkList = [];
 					let ftemp = that.productList;
 					for (let m in ftemp) {
+						let remark = {
+							fisher_id: ftemp[m].fisher_id,
+							remark: ftemp[m].remark,
+						}
+						remarkList.push(remark);
+
 						let ptemp = ftemp[m].product;
 						for (let n in ptemp) {
 							let temp = `${ptemp[n].product_id}_${ptemp[n].product_detail_id}_${ptemp[n].num}`;
@@ -175,7 +184,7 @@
 					let params = {
 						address_id: that.addressInfo.addressId,
 						product_list: JSON.stringify(product),
-						remark: that.remark
+						remark: JSON.stringify(remarkList),
 					};
 					that.$api('Order/create', params).then(data => {
 						if (data.status == 1) {
@@ -183,7 +192,8 @@
 							let no = data.data.pay_no;
 							let params = {
 								pay_type: that.payType,
-								no: no
+								no: no,
+								is_mini: 1,
 							};
 							this.$api('Pay/pay', params).then(data => {
 								if (data.status == 1) {

@@ -73,10 +73,12 @@
 				cityArray: [],
 				countyArray: [],
 				showArea: false,
+				loadId: 0,
 			};
 		},
 		onLoad(data) {
 			this.type = data.type || 'add';
+			this.loadId = data.loadId;
 		},
 		onReady() {
 			this.judge();
@@ -91,7 +93,7 @@
 							this.$showToast(data.msg);
 							setTimeout(() => {
 								uni.navigateBack({
-									
+
 								})
 							}, 500);
 						} else {

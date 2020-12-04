@@ -109,7 +109,7 @@
 					<u-icon name="arrow-right"></u-icon>
 				</view>
 			</navigator>
-			<view @click="openMini" class="default-window flex place">
+			<view @click="openMini" class="default-window flex place u-border-bottom">
 				<view class="flex">
 					<u-icon name="star"></u-icon>
 					<view style="padding: 0 30rpx;">锡安新品渔夫号</view>

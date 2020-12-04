@@ -26,9 +26,9 @@
 				<view class="u-font-11 u-tips-color">{{item.subtitle||''}}</view>
 				<u-gap height="16"></u-gap>
 				<view class="flex place">
-					<view class="font-red bold flex">
+					<view class="font-red  flex">
 						<view v-if="item.product_type==1" class="u-font-12">￥</view>
-						<view class="u-font-17">{{item.discount_price}}</view>
+						<view class="u-font-17 bold">{{item.discount_price}}</view>
 						<view v-if="item.product_type==2" class="u-font-12">鱼仔</view>
 						<view style="padding-left: 20rpx;text-decoration: line-through;" class="u-tips-color u-font-sm">￥{{item.original_price}}</view>
 					</view>
