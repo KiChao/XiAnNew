@@ -270,6 +270,7 @@
 						this.skuPrice = this.priceInfo[m].discount_price;
 						this.skuStock = this.priceInfo[m].stock;
 						this.skuNeedPoint = this.priceInfo[m].need_point;
+						
 					}
 				}
 			},
@@ -291,8 +292,14 @@
 						if (type == 1) {
 							let skuId = '';
 							if (this.priceInfo) {
-								skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
+								for(let m in this.priceInfo){
+									if(this.priceInfo[m].sku_value_array==this.paySkuInfo.skuArray){
+										skuId=this.priceInfo[m].product_detail_id
+									}
+								}
+								// skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
 							}
+							console.log(skuId)
 							this.$store.commit('chooseProduct', {
 								product: this.productInfo,
 								num: this.num,

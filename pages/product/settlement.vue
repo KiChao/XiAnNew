@@ -30,7 +30,7 @@
 					<view class="product-name">
 						<view>{{product.name}}</view>
 						<view class="u-font-12 u-tips-color">
-							<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}/</text>
+							<text>{{product.sku_str}}</text>
 						</view>
 						<view class="flex place">
 							<view class="font-red bold">{{product.product_type==1?`￥${product.discount_price}`:`${product.discount_price}鱼仔`}}</view>
