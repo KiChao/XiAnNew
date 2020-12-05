@@ -33,7 +33,7 @@
 			</view>
 			<view class="default-window flex place">
 				<view>支付方式</view>
-				<view v-if="orderInfo.pay_type==2" class="font-green bold">鱼仔兑换</view>
+				<view v-if="orderInfo.order_type==2" class="font-green bold">鱼仔兑换</view>
 				<view v-else class="font-red bold">现金支付</view>
 			</view>
 		</view>
@@ -68,7 +68,7 @@
 							<text v-for="sku in item.sku_info" :key="sku.sku_name">{{ sku.sku_key }}：{{ sku.sku_name }}/</text>
 						</view>
 						<view class="flex place">
-							<view class="font-red bold">￥{{item.discount_price}}</view>
+							<view class="font-red bold"><text v-if="orderInfo.order_type==1">￥</text>{{item.discount_price}} <text v-if="orderInfo.order_type==2">鱼仔</text></view>
 							<view class="u-font-11">×{{item.num}}</view>
 						</view>
 						<view  class="flex place">
@@ -87,7 +87,7 @@
 				<view class="flex">
 					<view>商品合计</view>
 					<view class="u-font-40 font-red bold" style="margin: 0 10rpx;">{{orderInfo.total_fee}}</view>
-					<view>元</view>
+					<view>{{orderInfo.order_type==1?'元':'鱼仔'}}</view>
 				</view>
 			</view>
 			<view class="default-window flex place ">

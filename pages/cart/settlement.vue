@@ -133,9 +133,10 @@
 			if (this.addressInfo.addressId != 0) {
 				// this.addressInfo = this.$store.state.address.address;
 				let that = this;
+				console.log(this.cartProduct)
 				let params = {
 					address_id: that.addressInfo.addressId,
-					product_list: JSON.stringify(this.cartArray),
+					product_list: JSON.stringify(this.cartProduct),
 					is_cart: 1
 				};
 				this.$api('Order/get_freight', params).then(data => {
@@ -260,6 +261,7 @@
 		width: 100%;
 		bottom: 0;
 		position: fixed;
+		z-index: 1000;
 	}
 
 	.product-image {

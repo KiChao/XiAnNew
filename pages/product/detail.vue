@@ -29,8 +29,8 @@
 			<u-gap height="16"></u-gap>
 			<view class="flex place u-font-12 u-tips-color">
 				<view>销量：{{productInfo.sv_total_num||0}}</view>
-				<view>库存：{{productInfo.stock||''}}</view>
-				<view>重量：{{productInfo.weight||''}}kg</view>
+				<view>库存：{{productInfo.stock||0}}</view>
+				<view>重量：{{productInfo.weight||0}}kg</view>
 			</view>
 		</view>
 		<u-gap height="16"></u-gap>
@@ -259,12 +259,13 @@
 			chooseSku(index, skuIndex) {
 				this.isChooseSku = false;
 				this.$set(this.hasChooseSku, index, skuIndex);
-
 				//加载价格
 				let temp = this.hasChooseSku.join('_');
 				this.paySkuInfo.skuArray = temp;
+				console.log(temp)
 				for (let m in this.priceInfo) {
-					if (temp == m) {
+					
+					if (temp == this.priceInfo[m].sku_value_array) {
 						this.isChooseSku = true;
 						this.skuPrice = this.priceInfo[m].discount_price;
 						this.skuStock = this.priceInfo[m].stock;

@@ -81,11 +81,16 @@
 						if (data.status == 1) {
 							let cartArray = this.chooseItem;
 							let cartProduct = [];
-							let product = data.data.product_data;
-							for (let m in product) {
-								let temp = `${product[m].product_id}_${product[m].product_detail_id}_${product[m].num}`;
-								cartProduct.push(temp);
+							let fisherList = data.data.product_list;
+							for(let n in fisherList){
+								let product = fisherList[n].product;
+								for (let m in product) {
+									let temp = `${product[m].product_id}_${product[m].product_detail_id}_${product[m].num}`;
+									cartProduct.push(temp);
+								}
 							}
+							
+							
 							this.$store.commit('chooseCart', {
 								cartArray: cartArray,
 								cartProduct: cartProduct
@@ -193,6 +198,7 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
+		z-index: 1000;
 	}
 
 	.sign-btn {

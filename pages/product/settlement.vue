@@ -234,6 +234,7 @@
 		width: 100%;
 		bottom: 0;
 		position: fixed;
+		z-index: 10000;
 	}
 
 	.product-image {

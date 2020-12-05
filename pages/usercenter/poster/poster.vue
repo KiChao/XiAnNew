@@ -16,13 +16,16 @@
 		},
 		methods: {
 			getPoster() {
+				this.$showLoading('加载中');
 				let params = {
 					type: 1
 				}
 				this.$api('UserCenter/mini_qrcode', params).then(data => {
 					if (data.status == 1) {
 						this.poster = data.data.qrcode;
+						this.$showHide()
 					} else {
+						this.$showHide()
 						this.$showToast(data.msg);
 					}
 				});
