@@ -262,7 +262,7 @@
 				//加载价格
 				let temp = this.hasChooseSku.join('_');
 				this.paySkuInfo.skuArray = temp;
-				console.log(temp)
+				
 				for (let m in this.priceInfo) {
 					
 					if (temp == this.priceInfo[m].sku_value_array) {
