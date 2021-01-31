@@ -6,8 +6,17 @@
 			</swiper-item>
 		</swiper>
 		<view class="default-window white">
-			<view class="product-name">{{productInfo.name||''}}</view>
-			<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
+			<view class="flex place">
+				<view>
+					<view class="product-name">{{productInfo.name||''}}</view>
+					<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
+				</view>
+				<view style="margin-left: 30rpx;width: 80rpx;">
+					<image @click="posterShow=true" src="/static/usercenter/weixin.png" style="width: 80rpx;height: 80rpx;display: block;"
+					 mode="widthFix"></image>
+				</view>
+			</view>
+
 			<u-gap height="16"></u-gap>
 			<view class="flex">
 				<view class="price"><text class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}</view>
@@ -91,6 +100,9 @@
 				 class=" action-btn buy-btn ">立即兑换</view>
 			</view>
 		</view>
+		<u-popup mode="center" :closeable="true" v-model="posterShow" width="70%" border-radius="16">
+			<image @click="save" :src="productInfo.poster" mode="widthFix" class="image"></image>
+		</u-popup>
 		<u-popup :closeable="true" mode="bottom" v-model="skuShow">
 			<view class="flex sku-window default-window">
 				<image :src="productInfo.img_list[0].url" class="sku-image" mode="widthFix"></image>
@@ -128,6 +140,7 @@
 	export default {
 		data() {
 			return {
+				posterShow: false,
 				skuShow: false,
 				loadId: '',
 				productInfo: {
@@ -173,16 +186,19 @@
 				console.log('无sn')
 			}
 		},
-		onReady() {
+		onShow() {
 			this.loadProduct();
+		},
+		onReady() {
+
 			this.getCartNum();
 		},
-		onShareTimeline() {
+		/* onShareTimeline() {
 			return {
 				title: this.productInfo.name,
 				path: `/pages/product/detail?loadId=${this.productInfo.product_id}&&sn=${uni.getStorageSync('sn')}`,
 			}
-		},
+		}, */
 		onShareAppMessage() {
 			return {
 				title: this.productInfo.name,
@@ -191,6 +207,62 @@
 			}
 		},
 		methods: {
+			//保存商品推广海报
+			savePoster() {
+				let that = this;
+				uni.showActionSheet({
+					itemList: ['保存至相册'],
+					success: function(res) {
+						if (res.tapIndex == 0) {
+							uni.downloadFile({
+								url: that.productInfo.poster, //仅为示例，并非真实的资源
+								success: (res) => {
+									if (res.statusCode === 200) {
+										console.log(res.tempFilePath);
+										uni.saveImageToPhotosAlbum({
+											filePath: res.tempFilePath,
+											success: function() {
+												that.$showToast('保存成功')
+											},
+											fail() {
+												that.$showToast('保存失败1')
+											}
+										});
+									} else {
+										that.$showToast('保存失败2')
+									}
+								},
+								fail: function(res) {
+									that.$showToast(JSON.stringify(res))
+								}
+							});
+						}
+					}
+				});
+			}, 
+			//保存图片
+			save() {
+				let that = this;
+				uni.getSetting({
+					success(res) {
+						
+						if (!res.authSetting['scope.writePhotosAlbum']) {
+							uni.authorize({
+								scope: 'scope.writePhotosAlbum',
+								success() {
+									//这里是用户同意授权后的回调
+									that.savePoster();
+								},
+								fail() { //这里是用户拒绝授权后的回调
+									that.$showToast('保存失败')
+								}
+							})
+						} else {
+							that.savePoster();
+						}
+					}
+				})
+			},
 			//获取购物车数量
 			getCartNum() {
 				this.$api('Cart/num').then(data => {
@@ -225,7 +297,7 @@
 				let params = {
 					product_id: this.loadId,
 				};
-				this.$api('Product/detail', params).then(data => {
+				this.$api2('Product/detail', params).then(data => {
 					if (data.status == 1) {
 						this.productInfo = data.data.product;
 						this.skuArray = data.data.sku;
@@ -262,15 +334,15 @@
 				//加载价格
 				let temp = this.hasChooseSku.join('_');
 				this.paySkuInfo.skuArray = temp;
-				
+
 				for (let m in this.priceInfo) {
-					
+
 					if (temp == this.priceInfo[m].sku_value_array) {
 						this.isChooseSku = true;
 						this.skuPrice = this.priceInfo[m].discount_price;
 						this.skuStock = this.priceInfo[m].stock;
 						this.skuNeedPoint = this.priceInfo[m].need_point;
-						
+
 					}
 				}
 			},
@@ -292,9 +364,9 @@
 						if (type == 1) {
 							let skuId = '';
 							if (this.priceInfo) {
-								for(let m in this.priceInfo){
-									if(this.priceInfo[m].sku_value_array==this.paySkuInfo.skuArray){
-										skuId=this.priceInfo[m].product_detail_id
+								for (let m in this.priceInfo) {
+									if (this.priceInfo[m].sku_value_array == this.paySkuInfo.skuArray) {
+										skuId = this.priceInfo[m].product_detail_id
 									}
 								}
 								// skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
@@ -533,5 +605,6 @@
 
 	.tag-item {
 		margin-right: 10rpx;
+		margin-bottom: 10rpx;
 	}
 </style>
