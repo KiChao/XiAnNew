@@ -340,7 +340,7 @@
 					if (temp == this.priceInfo[m].sku_value_array) {
 						this.isChooseSku = true;
 						this.skuPrice = this.priceInfo[m].discount_price;
-						this.skuStock = this.priceInfo[m].stock;
+						this.skuStock = this.priceInfo[m].stock.toString();
 						this.skuNeedPoint = this.priceInfo[m].need_point;
 
 					}
