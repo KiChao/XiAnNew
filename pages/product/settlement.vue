@@ -175,21 +175,30 @@
 								if (data.status == 1) {
 									uni.hideLoading();
 									this.$pay(data.data.response).then(data => {
-										uni.switchTab({
-											url: '/pages/usercenter/usercenter'
+										this.$getD(()=>{
+											uni.switchTab({
+												url: '/pages/usercenter/usercenter'
+											})
 										})
+										
 									}).catch(res => {
-										uni.switchTab({
-											url: '/pages/usercenter/usercenter'
+										
+										this.$getD(()=>{
+											uni.switchTab({
+												url: '/pages/usercenter/usercenter'
+											})
 										})
 										// this.$showToast(res.errMsg)
 									})
 								} else if (data.status == 2) {
-									uni.hideLoading();
-									that.$showToast('支付成功');
-									uni.switchTab({
-										url: '/pages/usercenter/usercenter'
+									this.$getD(()=>{
+										uni.hideLoading();
+										that.$showToast('支付成功');
+										uni.switchTab({
+											url: '/pages/usercenter/usercenter'
+										})
 									})
+									
 								} else {
 									that.$showToast(data.msg);
 								}

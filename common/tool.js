@@ -115,3 +115,17 @@ export const getRequestParameters = function(params = "") {
 	}
 	return theRequest;
 }
+
+/* 用户服务通知授权 */
+export const getD = async function(fnc = () => {}) {
+	wx.requestSubscribeMessage({
+		tmplIds: ['zkjdTlAEdwl-Zq8_ZkNGi2CbA9yYEoEJvl4X-BQmjsE'],
+		success(res) {
+			console.log('成功')
+			fnc();
+		},
+		fail() {
+			fnc();
+		}
+	});
+}
