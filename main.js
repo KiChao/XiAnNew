@@ -14,6 +14,7 @@ import {
 	showLoading, //显示loading
 	showHide, //隐藏loading和toast
 	pay, //支付
+	getD, //支付
 	
 	getRequestParameters,//获取二维码上的参数
 } from 'common/tool.js'
@@ -25,6 +26,7 @@ Vue.prototype.$showModal = showModal
 Vue.prototype.$showLoading = showLoading
 Vue.prototype.$showHide = showHide
 Vue.prototype.$pay = pay;
+Vue.prototype.$getD = getD;
 
 Vue.prototype.$getRequestParameters = getRequestParameters;
 

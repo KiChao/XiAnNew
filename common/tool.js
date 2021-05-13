@@ -119,7 +119,7 @@ export const getRequestParameters = function(params = "") {
 /* 用户服务通知授权 */
 export const getD = async function(fnc = () => {}) {
 	wx.requestSubscribeMessage({
-		tmplIds: ['zkjdTlAEdwl-Zq8_ZkNGi2CbA9yYEoEJvl4X-BQmjsE'],
+		tmplIds: ['zkjdTlAEdwl-Zq8_ZkNGi4Pabx83uqB2i3FEjiGrc6k'],
 		success(res) {
 			console.log('成功')
 			fnc();

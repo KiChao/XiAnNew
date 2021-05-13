@@ -58,7 +58,7 @@
 				<u-icon name="arrow-right" size="24"></u-icon>
 			</view>
 		</view>
-		<view class="default-window white flex">
+		<!-- <view class="default-window white flex">
 			<view style="width: 130rpx;" class="u-font-24">服务</view>
 			<view style="flex: 1;">
 				<view class="flex around u-tips-color u-font-26">
@@ -67,7 +67,7 @@
 					<text>价廉物美</text>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<u-gap height="16"></u-gap>
 		<view class="detail-desc">
 
