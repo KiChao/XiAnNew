@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<view style="background-color: #19BE6B;width: 100%;height: 100rpx;"></view>
-		<navigator url="/pages/address/address?type=choose" class="card default-window flex" style="margin-top: -80rpx;">
+		
+		<navigator v-if="pickType==1" url="/pages/address/address?type=choose" class="card default-window flex" style="margin-top: -80rpx;">
 			<view class="">
 				<u-icon name="map" size="50"></u-icon>
 			</view>
@@ -18,6 +19,28 @@
 				</view>
 			</view>
 		</navigator>
+		
+		<navigator v-if="pickType==2" :url="`/pages/product/pickAddress?loadId=${productInfo.fisher_id}`" class="card default-window flex" style="margin-top: -80rpx;">
+			<view class="">
+				<u-icon name="map" size="50"></u-icon>
+			</view>
+			<view v-if="pickAddressInfo.pickAddressId==0" style="padding-left: 30rpx;line-height: 1.8;">
+				选择自提地址
+			</view>
+			<view v-else style="padding-left: 30rpx;line-height: 1.8;">
+				<view class="flex place bold">
+					<view>{{pickAddressInfo.name}}</view>
+					<view>{{pickAddressInfo.phone}}</view>
+				</view>
+				<view class="u-font-26 u-tips-color">
+					{{pickAddressInfo.address}}
+				</view>
+			</view>
+		</navigator>
+		<view class="card default-window flex place">
+			<view>配送方式</view>
+			<view class="bold font-green">{{pickType==1?'快递邮寄':'门店自提'}}</view>
+		</view>
 		<view v-for="(item,index) in providerList" :key="index" class="card">
 			<view class="default-window u-border-bottom">
 				<u-section :title="item.fisher_name" :right="false" line-color="#19be6b"></u-section>
@@ -98,6 +121,7 @@
 				num: this.$store.state.product.num,
 				skuInfo: this.$store.state.product.sku,
 				detailId: this.$store.state.product.skuId || 0,
+				pickType:this.$store.state.product.pickType,
 
 				providerList: [],
 				totalPrice: 0,
@@ -106,26 +130,36 @@
 
 				desc: '', //备注
 				addressInfo: {
-					addressId: 0
+					addressId: 0,
+				},
+				pickAddressInfo:{
+					pickAddressId:0,
 				},
 				type: 0,
 			};
 		},
 		onShow() {
-			this.addressInfo = this.$store.state.address.address;
-			let that = this;
-			let params = {
-				address_id: that.addressInfo.addressId,
-				product_list: JSON.stringify([`${that.productInfo.product_id}_${that.detailId}_${that.num}`])
-			};
-			this.$api('Order/get_freight', params).then(data => {
-				if (data.status == 1) {
-					this.totalFee = data.data.freight;
-				} else {
-					this.$showToast(data.msg);
-				}
-
-			});
+			if(this.pickType==1){
+				this.addressInfo = this.$store.state.address.address;
+				let that = this;
+				let params = {
+					address_id: that.addressInfo.addressId,
+					product_list: JSON.stringify([`${that.productInfo.product_id}_${that.detailId}_${that.num}`])
+				};
+				this.$api('Order/get_freight', params).then(data => {
+					if (data.status == 1) {
+						this.totalFee = data.data.freight;
+					} else {
+						this.$showToast(data.msg);
+					}
+				
+				});
+			}else{
+				
+				this.pickAddressInfo=this.$store.state.address.pickAddress;
+				console.log(this.pickAddressInfo);
+			}
+			
 		},
 		onReady() {
 			this.createSettlement();
@@ -137,9 +171,14 @@
 				let that = this;
 				this.$showModal('是否提交订单？', () => {
 
-					if (that.addressInfo.addressId == 0) {
+					if (that.addressInfo.addressId == 0 && that.pickType==1) {
 						that.$showToast('请选择收货地址');
 
+						return;
+					}
+					if (that.pickAddressInfo.pickAddressId == 0 && that.pickType==2) {
+						that.$showToast('请选择自提地址');
+					
 						return;
 					}
 					let product = [];
@@ -162,6 +201,8 @@
 						address_id: that.addressInfo.addressId,
 						product_list: JSON.stringify(product),
 						remark: JSON.stringify(remarkList),
+						pick_type:that.pickType,
+						pick_address_id:that.pickAddressInfo.pickAddressId,
 					};
 					that.$api('Order/create', params).then(data => {
 						if (data.status == 1) {
@@ -171,7 +212,7 @@
 								is_mini: 1,
 								no: no
 							};
-							this.$api('Pay/pay', params).then(data => {
+							this.$api('pay/order', params).then(data => {
 								if (data.status == 1) {
 									uni.hideLoading();
 									this.$pay(data.data.response).then(data => {

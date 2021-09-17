@@ -3,6 +3,7 @@ const state = {
 	num: '',
 	sku: {},
 	skuId: '',
+	pickType:'',
 	
 	cartArray: [],
 	cartProduct: [],
@@ -13,6 +14,7 @@ const mutations = {
 		state.num = payload.num;
 		state.sku = payload.sku;
 		state.skuId = payload.skuId;
+		state.pickType = payload.pickType;
 	},
 	chooseCart(state, payload) {
 		state.cartArray = payload.cartArray;

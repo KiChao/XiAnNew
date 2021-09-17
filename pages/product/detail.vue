@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<swiper indicator-dots class="swpier">
-			<swiper-item v-for="(item,index) in productInfo.img_list" :key="index">
+			<swiper-item v-for="(item,index) in productInfo.img_info" :key="index">
 				<image :src="item.url" class="image" mode="widthFix"></image>
 			</swiper-item>
 		</swiper>
@@ -12,14 +12,16 @@
 					<view class="u-font-12 u-tips-color">{{productInfo.subtitle||''}}</view>
 				</view>
 				<view style="margin-left: 30rpx;width: 80rpx;">
-					<image @click="posterShow=true" src="/static/usercenter/weixin.png" style="width: 80rpx;height: 80rpx;display: block;"
-					 mode="widthFix"></image>
+					<image @click="posterShow=true" src="/static/usercenter/weixin.png"
+						style="width: 80rpx;height: 80rpx;display: block;" mode="widthFix"></image>
 				</view>
 			</view>
 
 			<u-gap height="16"></u-gap>
 			<view class="flex">
-				<view class="price"><text class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}</view>
+				<view class="price"><text
+						class="u-font-12">{{productInfo.product_type==1?'¥':'鱼仔'}}</text>{{productInfo.discount_price||''}}
+				</view>
 				<view class="origal-price">￥{{productInfo.original_price||''}}</view>
 			</view>
 			<u-gap height="16"></u-gap>
@@ -43,8 +45,9 @@
 			</view>
 		</view>
 		<u-gap height="16"></u-gap>
-		<view @click="openMini" class="default-window white"><text>该商品由</text><text class="font-green">{{productInfo.fisher_info.nickname}}</text><text>{{productInfo.product_type==1?'提供':'赞助'}}，</text><text
-			 class="font-green">{{productInfo.fisher_info.nickname}}</text><text>发货并提供售后服务。</text></view>
+		<view @click="openMini" class="default-window white"><text>该商品由</text><text
+				class="font-green">{{productInfo.fisher_info.nickname}}</text><text>{{productInfo.product_type==1?'提供':'赞助'}}，</text><text
+				class="font-green">{{productInfo.fisher_info.nickname}}</text><text>发货并提供售后服务。</text></view>
 		<u-gap height="16"></u-gap>
 		<view class="default-window white flex place">
 			<view class="u-font-24" style="width: 130rpx;">邮费</view>
@@ -92,12 +95,12 @@
 				<u-badge type="error" :count="cartNum" size="mini" :offset="[-10,0]"></u-badge>
 			</navigator>
 			<view class="action-btn-group">
-				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='cart'" type="primary"
-				 class=" action-btn  cart-btn ">加入购物车</view>
-				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='buy'" type="primary"
-				 class=" action-btn buy-btn ">立即购买</view>
-				<view v-if="productInfo.product_type==2" style="width: 360upx;" @click="skuShow=true;type='buy'" type="primary"
-				 class=" action-btn buy-btn ">立即兑换</view>
+				<view v-if="productInfo.product_type==1 && productInfo.pick_type!=2" style="width: 180upx;" @click="skuShow=true;type='cart'"
+					type="primary" class=" action-btn  cart-btn ">加入购物车</view>
+				<view v-if="productInfo.product_type==1" style="width: 180upx;" @click="skuShow=true;type='buy'"
+					type="primary" class=" action-btn buy-btn ">立即购买</view>
+				<view v-if="productInfo.product_type==2" style="width: 360upx;" @click="skuShow=true;type='buy'"
+					type="primary" class=" action-btn buy-btn ">立即兑换</view>
 			</view>
 		</view>
 		<u-popup mode="center" :closeable="true" v-model="posterShow" width="70%" border-radius="16">
@@ -105,10 +108,11 @@
 		</u-popup>
 		<u-popup :closeable="true" mode="bottom" v-model="skuShow">
 			<view class="flex sku-window default-window">
-				<image :src="productInfo.img_list[0].url" class="sku-image" mode="widthFix"></image>
+				<image :src="productInfo.img_info[0].url" class="sku-image" mode="widthFix"></image>
 				<view class="right" style="flex: 1;">
 					<text>{{productInfo.name}}</text>
-					<text class="price">{{productInfo.product_type==1?'¥':'鱼仔'}}{{skuPrice||productInfo.discount_price}}</text>
+					<text
+						class="price">{{productInfo.product_type==1?'¥':'鱼仔'}}{{skuPrice||productInfo.discount_price}}</text>
 					<text class="stock">库存：{{skuStock||productInfo.stock}}件</text>
 				</view>
 			</view>
@@ -116,9 +120,22 @@
 				<view v-for="(item,index) in skuArray" :key="index" class="attr-list">
 					<text>{{item.name}}</text>
 					<view class="item-list">
-						<text v-for="(sku, skuIndex) in item.sku_value" :key="skuIndex" class="tit" :class="{selected: hasChooseSku[index]==skuIndex}"
-						 @tap="chooseSku(index,skuIndex)">
+						<text v-for="(sku, skuIndex) in item.sku_value" :key="skuIndex" class="tit"
+							:class="{selected: hasChooseSku[index]==skuIndex}" @tap="chooseSku(index,skuIndex)">
 							{{sku.name}}
+						</text>
+					</view>
+				</view>
+			</view>
+			<view class="default-window">
+				<view class="attr-list">
+					<view>配送方式</view>
+					<view class="item-list">
+						<text v-if="productInfo.pick_type!=2" class="tit"  @tap="pickType=1" :class="{selected: pickType==1}">
+							快递邮寄
+						</text>
+						<text v-if="productInfo.pick_type!=1" class="tit"  @tap="pickType=2" :class="{selected: pickType==2}">
+							门店自提
 						</text>
 					</view>
 				</view>
@@ -130,7 +147,8 @@
 				</view>
 			</view>
 			<view class="default-window">
-				<u-button @click="sattlement" :type="type=='buy'?'success':'warning'" shape="circle">{{type=='buy'?'立即购买':'加入购物车'}}</u-button>
+				<u-button @click="sattlement" :type="type=='buy'?'success':'warning'" shape="circle">
+					{{type=='buy'?'立即购买':'加入购物车'}}</u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -140,6 +158,9 @@
 	export default {
 		data() {
 			return {
+				
+				pickType:3,
+				
 				posterShow: false,
 				skuShow: false,
 				loadId: '',
@@ -174,6 +195,8 @@
 					name: ''
 				},
 				cartNum: 0,
+				
+				
 			};
 		},
 		onLoad(data) {
@@ -239,13 +262,13 @@
 						}
 					}
 				});
-			}, 
+			},
 			//保存图片
 			save() {
 				let that = this;
 				uni.getSetting({
 					success(res) {
-						
+
 						if (!res.authSetting['scope.writePhotosAlbum']) {
 							uni.authorize({
 								scope: 'scope.writePhotosAlbum',
@@ -352,12 +375,17 @@
 					this.$showToast('请先选择规格');
 					return;
 				}
+				if(this.pickType==3){
+					this.$showToast('请先选择配送方式');
+					return;
+				}
 				let type = this.type == 'buy' ? 1 : 2;
 				let params = {
 					product_id: this.productInfo.product_id,
 					num: this.num,
 					sku_array: this.paySkuInfo.skuArray,
-					type: type
+					type: type,
+					pick_type:this.pickType,
 				};
 				this.$api('Product/check', params).then(data => {
 					if (data.status == 1) {
@@ -371,12 +399,13 @@
 								}
 								// skuId = this.priceInfo[this.paySkuInfo.skuArray].product_detail_id;
 							}
-							console.log(skuId)
+							
 							this.$store.commit('chooseProduct', {
 								product: this.productInfo,
 								num: this.num,
 								sku: this.paySkuInfo,
 								skuId: skuId,
+								pickType:this.pickType,
 							})
 							uni.navigateTo({
 								url: '/pages/product/settlement'

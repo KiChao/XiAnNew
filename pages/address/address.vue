@@ -45,7 +45,7 @@
 		methods: {
 			//加载收货地址
 			loadAddressList() {
-				this.$api('Address/index').then(data => {
+				this.$api('Address/lists').then(data => {
 					if (data.status == 1) {
 						this.addressList = data.data.address_list;
 					} else {

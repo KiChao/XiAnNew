@@ -166,7 +166,7 @@
 			},
 			//加载个人资料
 			loadUserDetail() {
-				this.$api2('UserCenter/index').then(data => {
+				this.$api2('UserCenter/init').then(data => {
 					if (data.status == 1) {
 						this.userInfo = data.data.user_info;
 						this.waitRead = data.data.wait_read_sysmsg;

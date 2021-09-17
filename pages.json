@@ -221,6 +221,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/product/pickAddress",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "自提地址选择",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 		"color": "#333333",

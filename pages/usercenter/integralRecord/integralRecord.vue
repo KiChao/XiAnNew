@@ -67,7 +67,7 @@
 				this.current = index;
 			},
 			loadLog() {
-				this.$api('UbpLog/index').then(data => {
+				this.$api('UbpLog/lists').then(data => {
 					if (data.status == 1) {
 						let logList = data.data.ubp_log_list;
 						this.fishList = [];

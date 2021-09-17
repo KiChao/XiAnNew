@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<navigator v-for="(item,index) in itemList" :key="index" :url="`/pages/product/detail?loadId=${item.product_id}`"
+		<!-- <navigator v-for="(item,index) in itemList" :key="index" :url="`/pages/product/detail?loadId=${item.product_id}`"
 		 hover-class="none" class="card">
 			<view class="bold default-window">
 				<view>{{item.name}}</view>
@@ -12,10 +12,7 @@
 				</view>
 			</view>
 			<view class=" image-window">
-				<!-- <view v-for="(image,tip) in item.img_info.slice(0,3)" :key="tip" class="image-item">
-					<u-image width="100%" :src="image.url" mode="widthFix"></u-image>
-
-				</view> -->
+				
 				<u-row gutter="20">
 					<u-col  @click="checkProduct(item.product_id)" span="4" v-for="(image,tip) in item.img_info.slice(0,3)" :key="tip">
 						<u-image width="100%" :src="image.url" mode="widthFix"></u-image>
@@ -37,7 +34,49 @@
 					</view>
 				</view>
 			</view>
-		</navigator>
+		</navigator> -->
+		<u-waterfall ref="uWaterfall"  v-model="itemList">
+			<template v-slot:left="{leftList}">
+				<navigator hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall" v-for="(item, index) in leftList" :key="index">
+					<image class="waterfall-image" :src="item.img_info[0].url" mode="widthFix"></image>
+					
+					<view style="position: relative;">
+						<view class="u-padding-10 u-font-sm u-border-bottom title">
+							{{item.name}}
+						</view>
+					</view>
+					<view class="u-padding-10 flex">
+						<view>
+							<image :src="item.fisher_info.headimgurl" mode="aspectFill" class="head"></image>
+						</view>
+						<view class="u-padding-left-10">
+							<view class="u-tips-color u-font-xs font-red">{{item.fisher_info.nickname}}</view>
+							<view class="u-font-xs">{{item.time}}</view>
+						</view>
+					</view>
+					
+				</navigator>
+			</template>
+			<template v-slot:right="{rightList}">
+				<navigator  hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall" v-for="(item, index) in rightList" :key="index">
+					<image class="waterfall-image" :src="item.img_info[0].url" mode="widthFix"></image>
+					
+					<view class="u-padding-10 u-font-sm u-border-bottom title">
+						{{item.name}}
+					</view>
+					<view class="u-padding-10 flex">
+						<view>
+							<image :src="item.fisher_info.headimgurl" mode="aspectFill" class="head"></image>
+						</view>
+						<view class="u-padding-left-10">
+							<view class="u-tips-color u-font-xs font-red">{{item.fisher_info.nickname}}</view>
+							<view class="u-font-xs">{{item.time}}</view>
+						</view>
+					</view>
+					
+				</navigator>
+			</template>
+		</u-waterfall>
 	</view>
 </template>
 
@@ -76,7 +115,7 @@
 
 	}
 </script>
-
+<!-- 
 <style lang="scss">
 	.tag-item {
 		margin-right: 10rpx;
@@ -88,6 +127,40 @@
 		.image-item {
 			width: 33.33%;
 			margin: 0 10rpx;
+		}
+	}
+</style> -->
+<style lang="scss">
+	.waterfall {
+		border-radius: 16rpx;
+		margin: 20rpx 10rpx;
+		background-color: #FFFFFF;
+		position: relative;
+		box-shadow: 2rpx 2rpx 16rpx #eee;
+
+		.tip {
+			position: absolute;
+			right: -10rpx;
+			top: 10rpx;
+			z-index: 100;
+		}
+		.title{
+			
+			
+		}
+
+		.waterfall-image {
+			border-top-left-radius: 16rpx;
+			border-top-right-radius: 16rpx;
+			width: 100%;
+			display: block;
+		}
+
+		.head {
+			border-radius: 50%;
+			width: 50rpx;
+			height: 50rpx;
+			display: block;
 		}
 	}
 </style>
