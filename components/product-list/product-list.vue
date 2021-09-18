@@ -35,45 +35,50 @@
 				</view>
 			</view>
 		</navigator> -->
-		<u-waterfall ref="uWaterfall"  v-model="itemList">
+		<u-waterfall ref="uWaterfall" v-model="itemList">
 			<template v-slot:left="{leftList}">
-				<navigator hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall" v-for="(item, index) in leftList" :key="index">
+				<navigator hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall"
+					v-for="(item, index) in leftList" :key="index">
 					<image class="waterfall-image" :src="item.img_info[0].url" mode="widthFix"></image>
-					
-					<view style="position: relative;">
-						<view class="u-padding-10 u-font-sm u-border-bottom title">
-							{{item.name}}
-						</view>
-					</view>
-					<view class="u-padding-10 flex">
-						<view>
-							<image :src="item.fisher_info.headimgurl" mode="aspectFill" class="head"></image>
-						</view>
-						<view class="u-padding-left-10">
-							<view class="u-tips-color u-font-xs font-red">{{item.fisher_info.nickname}}</view>
-							<view class="u-font-xs">{{item.time}}</view>
-						</view>
-					</view>
-					
-				</navigator>
-			</template>
-			<template v-slot:right="{rightList}">
-				<navigator  hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall" v-for="(item, index) in rightList" :key="index">
-					<image class="waterfall-image" :src="item.img_info[0].url" mode="widthFix"></image>
-					
-					<view class="u-padding-10 u-font-sm u-border-bottom title">
+
+					<view class="u-padding-10 u-font-sm  title">
 						{{item.name}}
 					</view>
 					<view class="u-padding-10 flex">
 						<view>
-							<image :src="item.fisher_info.headimgurl" mode="aspectFill" class="head"></image>
+							<view class="u-tips-color font-red">
+								{{item.product_type==1?`￥${item.discount_price}`:`${item.discount_price}鱼仔`}}
+							</view>
 						</view>
-						<view class="u-padding-left-10">
-							<view class="u-tips-color u-font-xs font-red">{{item.fisher_info.nickname}}</view>
-							<view class="u-font-xs">{{item.time}}</view>
+						<view class="u-padding-left-20">
+							<view class="u-tips-color font-red" style="color: grey;text-decoration: line-through;">
+								￥{{item.original_price}}
+							</view>
 						</view>
 					</view>
-					
+
+				</navigator>
+			</template>
+			<template v-slot:right="{rightList}">
+				<navigator hover-class="none" :url="`/pages/product/detail?loadId=${item.product_id}`" class="waterfall"
+					v-for="(item, index) in rightList" :key="index">
+					<image class="waterfall-image" :src="item.img_info[0].url" mode="widthFix"></image>
+
+					<view class="u-padding-10 u-font-sm  title">
+						{{item.name}}
+					</view>
+					<view class="u-padding-10 flex">
+						<view>
+							<view class="u-tips-color font-red">
+								{{item.product_type==1?`￥${item.discount_price}`:`${item.discount_price}鱼仔`}}
+							</view>
+						</view>
+						<view class="u-padding-left-10">
+							<view class="u-tips-color font-red" style="color: grey;text-decoration: line-through;">
+								￥{{item.original_price}}
+							</view>
+						</view>
+					</view>
 				</navigator>
 			</template>
 		</u-waterfall>
@@ -92,10 +97,10 @@
 				type: Array
 			}
 		},
-		methods:{
-			checkProduct(id){
+		methods: {
+			checkProduct(id) {
 				uni.navigateTo({
-					url:`/pages/product/detail?loadId=${id}`
+					url: `/pages/product/detail?loadId=${id}`
 				})
 			}
 		},
@@ -144,9 +149,11 @@
 			top: 10rpx;
 			z-index: 100;
 		}
-		.title{
-			
-			
+
+		.title {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 		}
 
 		.waterfall-image {

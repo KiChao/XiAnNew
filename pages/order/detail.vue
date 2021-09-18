@@ -10,7 +10,7 @@
 			</view>
 			<view style="padding-left: 30rpx;flex: 1;">
 				<view class="flex place bold">
-					<view>{{orderInfo.pick_type==1?"":"自提地址"}}：{{ orderInfo.receiver_name }}</view>
+					<view>{{orderInfo.pick_type==1?"":"自提地址："}}{{ orderInfo.receiver_name }}</view>
 					<view>{{ orderInfo.receiver_phone }}</view>
 				</view>
 				<view class="u-font-26 u-tips-color">
@@ -22,7 +22,7 @@
 			<view>配送方式</view>
 			<view>{{orderInfo.pick_type==1?"快递配送":"门店自提"}}</view>
 		</view>
-		<view v-if="orderInfo.pick_type&&0<orderInfo.status<=3" class="card default-window flex place">
+		<view v-if="orderInfo.pick_type==2&&0<orderInfo.status<=3" class="card default-window flex place">
 			<view class="bold">提货码</view>
 			<view class="font-green bold">{{orderInfo.pick_code}}</view>
 		</view>

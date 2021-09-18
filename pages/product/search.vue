@@ -34,7 +34,7 @@
 					this.$showToast('请输入搜索内容')
 				} else {
 					let params = {
-						name: this.searchValue
+						'name|like': this.searchValue
 					}
 					this.$api('Product/lists', params).then(data => {
 						if (data.status == 1) {

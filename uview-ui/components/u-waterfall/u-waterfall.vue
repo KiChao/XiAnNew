@@ -166,6 +166,7 @@ export default {
 .u-column {
 	@include vue-flex;
 	flex: 1;
+	width: 50%;
 	flex-direction: column;
 	height: auto;
 }

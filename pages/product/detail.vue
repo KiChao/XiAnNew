@@ -148,7 +148,7 @@
 			</view>
 			<view class="default-window">
 				<u-button @click="sattlement" :type="type=='buy'?'success':'warning'" shape="circle">
-					{{type=='buy'?'立即购买':'加入购物车'}}</u-button>
+					{{type=='buy'?(productInfo.product_type==1?'立即购买':'立即兑换'):'加入购物车'}}</u-button>
 			</view>
 		</u-popup>
 	</view>

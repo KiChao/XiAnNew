@@ -3,7 +3,7 @@ export const port = async function(location, params = null) {
 	return await new Promise((resolve, reject) => {
 		let that = this;
 		uni.request({
-			url: `https://api.vxyz.cn/api/${location}`,
+			url: `https://m.vxyz.cn/api/${location}`,
 			data: params,
 			method: `POST`,
 			header: {
@@ -29,7 +29,7 @@ export const port2 = async function(location, params = null) {
 	return await new Promise((resolve, reject) => {
 		let that = this;
 		uni.request({
-			url: `https://api.vxyz.cn/api/${location}`,
+			url: `https://m.vxyz.cn/api/${location}`,
 			data: params,
 			method: `POST`,
 			header: {
