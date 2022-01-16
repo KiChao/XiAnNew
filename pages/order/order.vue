@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<u-sticky>
-			<u-subsection @change="change" bgColor="#FFFFFF" buttonColor="#19be6b" active-color="#FFFFFF" :list="tabs" :current="current"></u-subsection>
+			<u-subsection @change="change" bgColor="#FFFFFF" buttonColor="#19be6b" active-color="#FFFFFF" :list="tabs"
+				:current="current"></u-subsection>
 		</u-sticky>
 		<view v-if="current==0">
 			<view v-for="(item,index) in orderList0" :key="index" class="card">
@@ -13,15 +14,16 @@
 					<view class="u-font-11 u-tips-color">待付款</view>
 				</view>
 				<navigator hover-class="none" :url="`/pages/order/detail?loadId=${item.order_id}`">
-					<view style="align-items: flex-start;" class="default-window flex u-border-bottom" v-for="(product,tip) in item.product_list"
-					 :key="tip">
+					<view style="align-items: flex-start;" class="default-window flex u-border-bottom"
+						v-for="(product,tip) in item.product_list" :key="tip">
 						<view class="product-image">
 							<u-image :src="product.main_img" width="100%" mode="widthFix"></u-image>
 						</view>
 						<view class="product-name">
 							<view>{{product.name}}</view>
 							<view class="u-font-12 u-tips-color">
-								<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
+								<text v-for="sku in product.sku_info"
+									:key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
 							</view>
 							<view class="flex place">
 								<view class="font-red bold">
@@ -52,14 +54,16 @@
 					<view class="u-font-11" style="color: #ff9900;">待发货</view>
 				</view>
 				<navigator hover-class="none" :url="`/pages/order/detail?loadId=${item.order_id}`">
-					<view style="align-items: flex-start;" class="default-window flex" v-for="(product,tip) in item.product_list" :key="tip">
+					<view style="align-items: flex-start;" class="default-window flex"
+						v-for="(product,tip) in item.product_list" :key="tip">
 						<view class="product-image">
 							<u-image :src="product.main_img" width="100%" mode="widthFix"></u-image>
 						</view>
 						<view class="product-name">
 							<view>{{product.name}}</view>
 							<view class="u-font-12 u-tips-color">
-								<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
+								<text v-for="sku in product.sku_info"
+									:key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
 							</view>
 							<view class="flex place">
 								<view class="font-red bold">
@@ -83,15 +87,16 @@
 					<view class="u-font-11 font-green">待收货</view>
 				</view>
 				<navigator hover-class="none" :url="`/pages/order/detail?loadId=${item.order_id}`">
-					<view style="align-items: flex-start;" class="default-window flex u-border-bottom" v-for="(product,tip) in item.product_list"
-					 :key="tip">
+					<view style="align-items: flex-start;" class="default-window flex u-border-bottom"
+						v-for="(product,tip) in item.product_list" :key="tip">
 						<view class="product-image">
 							<u-image :src="product.main_img" width="100%" mode="widthFix"></u-image>
 						</view>
 						<view class="product-name">
 							<view>{{product.name}}</view>
 							<view class="u-font-12 u-tips-color">
-								<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
+								<text v-for="sku in product.sku_info"
+									:key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
 							</view>
 							<view class="flex place">
 								<view class="font-red bold">
@@ -106,7 +111,8 @@
 				<view class="default-window flex place">
 					<view></view>
 					<view class="flex around">
-						<u-button @click="confirmOrder(item.order_id)" size="mini" type="success" class="btn">确认收货</u-button>
+						<u-button @click="confirmOrder(item.order_id)" size="mini" type="success" class="btn">确认收货
+						</u-button>
 					</view>
 				</view>
 			</view>
@@ -121,14 +127,49 @@
 					<view class="u-font-11 u-tips-color">已完成</view>
 				</view>
 				<navigator hover-class="none" :url="`/pages/order/detail?loadId=${item.order_id}`">
-					<view style="align-items: flex-start;" class="default-window flex" v-for="(product,tip) in item.product_list" :key="tip">
+					<view style="align-items: flex-start;" class="default-window flex"
+						v-for="(product,tip) in item.product_list" :key="tip">
 						<view class="product-image">
 							<u-image :src="product.main_img" width="100%" mode="widthFix"></u-image>
 						</view>
 						<view class="product-name">
 							<view>{{product.name}}</view>
 							<view class="u-font-12 u-tips-color">
-								<text v-for="sku in product.sku_info" :key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
+								<text v-for="sku in product.sku_info"
+									:key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
+							</view>
+							<view class="flex place">
+								<view class="font-red bold">
+									<text v-if="item.order_type==1">￥{{product.discount_price}}</text>
+									<text v-else>{{product.discount_price}}鱼仔</text>
+								</view>
+								<view class="u-font-11">×{{product.num}}</view>
+							</view>
+						</view>
+					</view>
+				</navigator>
+			</view>
+		</view>
+		<view v-if="current==4">
+			<view v-for="(item,index) in orderList4" :key="index" class="card">
+				<view class="u-border-bottom default-window flex place">
+					<view class="flex">
+						<image :src="item.fisher_info.headimgurl" class="shop-head" mode="aspectFill"></image>
+						<view class="shop-name">{{item.fisher_info.nickname}}</view>
+					</view>
+					<view class="u-font-11 u-tips-color">其他</view>
+				</view>
+				<navigator hover-class="none" :url="`/pages/order/detail?loadId=${item.order_id}`">
+					<view style="align-items: flex-start;" class="default-window flex"
+						v-for="(product,tip) in item.product_list" :key="tip">
+						<view class="product-image">
+							<u-image :src="product.main_img" width="100%" mode="widthFix"></u-image>
+						</view>
+						<view class="product-name">
+							<view>{{product.name}}</view>
+							<view class="u-font-12 u-tips-color">
+								<text v-for="sku in product.sku_info"
+									:key="sku.sku_name">{{sku.sku_key}}：{{sku.sku_name}}</text>
 							</view>
 							<view class="flex place">
 								<view class="font-red bold">
@@ -161,12 +202,15 @@
 					},
 					{
 						name: '已完成'
+					}, {
+						name: '其他'
 					}
 				],
 				orderList0: [],
 				orderList1: [],
 				orderList2: [],
 				orderList3: [],
+				orderList4: [],
 			};
 		},
 		onLoad(data) {
@@ -181,7 +225,7 @@
 			},
 			//确认收货
 			confirmOrder(id) {
-				this.$showModal('是否确认收货此商品？',()=>{
+				this.$showModal('是否确认收货此商品？', () => {
 					let params = {
 						order_id: id
 					};
@@ -203,7 +247,7 @@
 						is_mini: 1,
 						no: no
 					};
-					this.$api('Pay/pay', params).then(data => {
+					this.$api('Pay/order', params).then(data => {
 						if (data.status == 1) {
 							uni.hideLoading();
 							this.$pay(data.data.response).then(data => {
@@ -253,6 +297,7 @@
 									this.orderList3.push(orderList[m]);
 									break;
 								default:
+								
 									this.orderList4.push(orderList[m]);
 									break;
 							}

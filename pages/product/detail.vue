@@ -89,7 +89,7 @@
 				<u-icon size="40" name="kefu-ermai"></u-icon>
 				<text>客服</text>
 			</view>
-			<navigator url="/pages/cart/cart" hover-class="none" class="p-b-btn" style="position: relative;">
+			<navigator open-type="switchTab" url="/pages/cart/cart" hover-class="none" class="p-b-btn" style="position: relative;">
 				<u-icon size="40" name="shopping-cart"></u-icon>
 				<text>购物车</text>
 				<u-badge type="error" :count="cartNum" size="mini" :offset="[-10,0]"></u-badge>
@@ -208,6 +208,20 @@
 			} else {
 				console.log('无sn')
 			}
+			if (data.scene) {
+				let query = this.$getRequestParameters(decodeURIComponent(data.scene));
+				this.loadId = query.loadId;
+				let sn = query.sn;
+				
+				if (sn) {
+					this.$store.commit('setSn', {
+						ref_sn: sn
+					})
+				} else {
+					console.log('无sn')
+				}
+			
+			}
 		},
 		onShow() {
 			this.loadProduct();
@@ -223,10 +237,11 @@
 			}
 		}, */
 		onShareAppMessage() {
+			let that = this;
 			return {
-				title: this.productInfo.name,
-				path: `/pages/product/detail?loadId=${this.productInfo.product_id}&&sn=${uni.getStorageSync('sn')}`,
-				imageUrl: this.productInfo.img_list[0].url,
+				title: that.productInfo.name,
+				path: `/pages/product/detail?loadId=${that.productInfo.product_id}&&sn=${uni.getStorageSync('sn')}`,
+				imageUrl: that.productInfo.img_info[0].url,
 			}
 		},
 		methods: {
@@ -304,10 +319,12 @@
 				})
 			},
 			openMini() {
-				let id = this.productInfo.fisher_id;
+				
+				let that = this;
 				wx.navigateToMiniProgram({
-					appId: 'wx55b0503ceeb1e360',
-					path: '/pages/fisher/detail?loadId=' + id,
+					appId: 'wx9ffc01671a7cfb09',
+					// path: '/pages/index/index?fisher_id='id+'&sn=' + ,
+					path: `/pages/index/index?fisher_id=${that.productInfo.fisher_id}&&sn=${uni.getStorageSync('sn')}`,
 				})
 			},
 			goSubmit() {

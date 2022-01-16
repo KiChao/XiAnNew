@@ -36,7 +36,7 @@
 				let params = {
 					page: this.page
 				}
-				this.$api('Sysmsg/index', params).then(data => {
+				this.$api('Sysmsg/lists', params).then(data => {
 					if (data.status == 1) {
 						let list = data.data.sysmsg_list;
 						for (let m in list) {

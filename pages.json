@@ -249,6 +249,12 @@
 				"text": "分类"
 			},
 			{
+				"pagePath": "pages/cart/cart",
+				"iconPath":"static/icon/cart.png",
+				"selectedIconPath":"static/icon/cart-hover.png",
+				"text": "购物车"
+			},
+			{
 				"pagePath": "pages/usercenter/usercenter",
 				"iconPath":"static/icon/usercenter.png",
 				"selectedIconPath":"static/icon/usercenter-hover.png",

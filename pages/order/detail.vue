@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view style="background-color: #19BE6B;width: 100%;height: 150rpx;"></view>
-		<view class="card" style="margin-top: -80rpx;padding: 40rpx 0;">
+		<view v-if="orderInfo.status<=3" class="card" style="margin-top: -80rpx;padding: 40rpx 0;">
 			<u-steps mode="number" active-color="#19be6b" :list="numList" :current="orderInfo.status"></u-steps>
 		</view>
 		<view class="card default-window flex">

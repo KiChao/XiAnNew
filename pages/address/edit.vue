@@ -3,8 +3,8 @@
 		<view class="white">
 			<u-field v-model="formData.name" class="white" label="姓名" placeholder="收货人姓名"></u-field>
 			<u-field v-model="formData.phone" class="white" type="number" label="手机" placeholder="收货人手机号码"></u-field>
-			<u-field :value="formData.province+formData.city+formData.county" class="white" disabled="" @click="showArea=true"
-			 label="省/市/县" placeholder="点击选择" disabled right-icon="arrow-down-fill"></u-field>
+			<u-field :value="formData.province+formData.city+formData.county" class="white" disabled=""
+				@click="showArea=true" label="省/市/县" placeholder="点击选择" disabled right-icon="arrow-down-fill"></u-field>
 			<u-field v-model="formData.street" class="white" label="街道" placeholder="详细街道地址,门牌号"></u-field>
 		</view>
 
@@ -21,8 +21,8 @@
 			<view class="flex u-text-center">
 				<view style="flex: 1;">
 					<scroll-view :scroll-y="true" style="height: 800rpx;">
-						<view @click="chooseProvince(province.id,province.name)" class="default-window" v-for="province in provinceArray"
-						 :key="province.id">
+						<view @click="chooseProvince(province.id,province.name)" class="default-window"
+							v-for="province in provinceArray" :key="province.id">
 							{{province.name}}
 						</view>
 					</scroll-view>
@@ -30,14 +30,16 @@
 				</view>
 				<view style="flex: 1;">
 					<scroll-view :scroll-y="true" style="height: 800rpx;">
-						<view @click="chooseCity(city.id,city.name)" class="default-window" v-for="city in cityArray" :key="city.id">
+						<view @click="chooseCity(city.id,city.name)" class="default-window" v-for="city in cityArray"
+							:key="city.id">
 							{{city.name}}
 						</view>
 					</scroll-view>
 				</view>
 				<view style="flex: 1;">
 					<scroll-view :scroll-y="true" style="height: 800rpx;">
-						<view @click="chooseCounty(county.id,county.name)" class="default-window" v-for="county in countyArray" :key="county.id">
+						<view @click="chooseCounty(county.id,county.name)" class="default-window"
+							v-for="county in countyArray" :key="county.id">
 							{{county.name}}
 						</view>
 					</scroll-view>
@@ -87,6 +89,10 @@
 		methods: {
 			//保存收货地址
 			save() {
+				if(this.formData.name==''||this.formData.phone==''||this.formData.county_id==''||this.formData.street==''){
+					this.$showToast('请完整填写表格');
+					return;
+				}
 				this.$showModal('是否保存收货地址？', () => {
 					this.$api('Address/save', this.formData).then(data => {
 						if (data.status == 1) {

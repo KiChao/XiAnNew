@@ -27,6 +27,18 @@ const mutations = {
 		state.pickAddress.name = payload.name;
 		state.pickAddress.phone = payload.phone;
 		state.pickAddress.address = payload.address;
+	},
+	//清除收货地址和自提地址
+	cleanAddress(state, payload){
+		state.address.addressId = 0;
+		state.address.name = null;
+		state.address.phone = null;
+		state.address.address = null;
+		
+		state.pickAddress.pickAddressId = 0;
+		state.pickAddress.name = null;
+		state.pickAddress.phone = null;
+		state.pickAddress.address = null;
 	}
 }
 
